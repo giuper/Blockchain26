@@ -128,7 +128,7 @@ by compiling the TEAL program
     response=algodClient.compile(data)
     sender=response['hash']           #the address of the TEAL program
 ```
-Note that the address of th TEAL program must be funded.
+Note that the address of the TEAL program must be funded.
 
 #### Step 2 ####
 The transaction is then constructed as any other transaction by calling
