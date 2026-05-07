@@ -1,7 +1,6 @@
 import sys
 import json
 import base64
-#from algosdk import account, mnemonic
 from algosdk.mnemonic import to_private_key
 from algosdk.v2client import algod
 from algosdk.transaction import Multisig, MultisigTransaction, PaymentTxn, write_to_file
