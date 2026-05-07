@@ -1,6 +1,5 @@
 # *Blockchain*
-## UNISA Spring 24 (revised in 25) ##
-
+## UNISA Spring 26 (based on code from Spring 25) ##
 ## Code for multi signatures ##
 ### All in one ###
 1. [createMultiAddr.py](./createMultiAddr.py) creates a 2 out of 3
