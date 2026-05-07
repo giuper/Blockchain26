@@ -27,8 +27,8 @@ together
 Next we discuss an example in which we construct and submitted 
 an atomic group of two transactions:
 
-1. Account1 sends 10 Algos to Account2
-2. Account2 sends 4 instances of an ASA to Account1
+1. Account1 sends 4 instances of an ASA to Account2
+2. Account2 sends 1 Algos to Account1
 
 Script [atomicSwap.py](./atomicSwap.py) takes as input two account addresses and an asset id, and 
 submits the group of transactions.
