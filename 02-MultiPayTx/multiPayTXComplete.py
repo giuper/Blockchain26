@@ -3,7 +3,7 @@ import json
 import base64
 from algosdk import account, mnemonic
 from algosdk.v2client import algod
-from algosdk.future.transaction import Multisig, MultisigTransaction, PaymentTxn, write_to_file
+from algosdk.transaction import Multisig, MultisigTransaction, PaymentTxn, write_to_file
 from utilities import *
 
 
@@ -52,7 +52,7 @@ def main():
         print("usage: python",sys.argv[0],"<Addr1> <Addr2> <Addr3> <Mnem1> <Mnem2> <Receiver Addr>")
         exit()
 
-    amount=1_000_000
+    amount=500_000
     version=1
     threshold=2
     

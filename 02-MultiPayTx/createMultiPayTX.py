@@ -1,8 +1,6 @@
 import sys
-from algosdk import account
 from algosdk.v2client import algod
-from algosdk.future.transaction import Multisig, MultisigTransaction, PaymentTxn
-from algosdk.future.transaction import write_to_file
+from algosdk.transaction import Multisig, MultisigTransaction, PaymentTxn, write_to_file
 from utilities import algodAddress, algodToken
 
 
@@ -29,8 +27,8 @@ def unsignedMultiSigTX(amount,threshold,version,algodClient,senders,receiver,txF
 
 
 if __name__=='__main__':
-    if len(sys.argv)<4:
-        print("usage: python "+sys.argv[0]+" <Addr1> <Addr2> <Addr3> <AddrRec>")
+    if len(sys.argv)<5:
+        print("usage: python "+sys.argv[0]+" <File with Addr1> <File with Addr2> <File with Addr3> <File with AddrRec>")
         exit()
 
     algodClient = algod.AlgodClient(algodToken,algodAddress)

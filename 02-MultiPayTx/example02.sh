@@ -1,11 +1,11 @@
 #!/bin/bash
 
 #specify your version of python
-python=python3.10
+python=python
 
-account1=P1
-account2=P2
-account3=P3
+account1=alice
+account2=bob
+account3=charlie
 accountMulti=M
 
 txDir="./TX"

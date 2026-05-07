@@ -2,13 +2,13 @@ import sys
 import json
 import base64
 from algosdk.v2client import algod
-from algosdk.future.transaction import retrieve_from_file
+from algosdk.transaction import retrieve_from_file
 from utilities import algodAddress, algodToken, wait_for_confirmation
 
 
 def main():
     if len(sys.argv)<2:
-        print("usage: python "+sys.argv[0]+" <Signed TX>")
+        print("usage: python "+sys.argv[0]+" <File with Signed TX>")
         exit()
 
     signedTXFile=sys.argv[1] #file containing the signed transaction

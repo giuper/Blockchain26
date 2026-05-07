@@ -1,5 +1,5 @@
 import sys
-from algosdk.future.transaction import Multisig
+from algosdk.transaction import Multisig
 
 def createMultiSig(accounts,outputFile):
     version=1   #multisig version
