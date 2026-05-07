@@ -17,7 +17,7 @@ def signT(filet,filem):
 
 if __name__=="__main__":
     if (len(sys.argv)!=3):
-        print("Usage: python "+sys.argv[0]+" <file tx> <mnem sending asset>")
+        print("Usage: python "+sys.argv[0]+" <file tx> <mnem sending algo>")
         exit()
 
     filet=sys.argv[1]
