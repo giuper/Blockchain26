@@ -1,5 +1,5 @@
 # *Blockchain*
-## UNISA Spring 24 (revised in 25) ##
+## UNISA Spring 26 (based on code from Spring 25) ##
 
 ## Logic (or Smart) Signatures ##
 
