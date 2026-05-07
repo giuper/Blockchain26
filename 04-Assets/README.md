@@ -4,7 +4,7 @@
 
 ### Step by step  ###
 
-1. Run [01-createAsset.py](./01-createAsset.py) to create asset with name ```BlockchainUnisa25```.
+1. Run [01-createAsset.py](./01-createAsset.py) to create asset with name ```BlockchainUnisa26```.
 The name can be modified in [this](./localUT.py) file.
 It takes two command line arguments: 
 the filename containing the mnemonic of the creator account and
@@ -23,7 +23,7 @@ Take note of the asset index that will be needed for the following steps.
         reserve=reserveAddr,
         freeze=freezeAddr,
         clawback=clawbackAddr,
-        url="https://github.com/giuper/Blockchain24",
+        url="https://github.com/giuper/Blockchain26",
         decimals=0)
 ```
 
