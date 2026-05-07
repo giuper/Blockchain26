@@ -1,7 +1,8 @@
 import sys
 import json
 import base64
-from algosdk import account, mnemonic
+#from algosdk import account, mnemonic
+from algosdk.mnemonic import to_private_key
 from algosdk.v2client import algod
 from algosdk.transaction import Multisig, MultisigTransaction, PaymentTxn, write_to_file
 from utilities import *
@@ -26,7 +27,7 @@ def multiPayTX(mnems,mSig,rAddr,amount,algodClient):
 
     # sign transaction
     for i in range(mSig.threshold):
-        sk=mnemonic.to_private_key(mnems[i])
+        sk=to_private_key(mnems[i])
         mTx.sign(sk)
         
     write_to_file([mTx],"TX/MultiPay.stx")
@@ -52,7 +53,7 @@ def main():
         print("usage: python",sys.argv[0],"<Addr1> <Addr2> <Addr3> <Mnem1> <Mnem2> <Receiver Addr>")
         exit()
 
-    amount=500_000
+    amount=100_000
     version=1
     threshold=2
     
