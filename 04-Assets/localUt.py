@@ -1,3 +1,3 @@
-AssetName="BlockchainUnisa25"
-AssetUnit="BUnisa25"
+AssetName="BlockchainUnisa26"
+AssetUnit="BUnisa26"
 TXFolder="./TX/"
