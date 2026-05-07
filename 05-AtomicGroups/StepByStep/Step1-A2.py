@@ -16,7 +16,7 @@ def step1(pk1,pk2,algodClient):
 
 if __name__=="__main__":
     if (len(sys.argv)!=3):
-        print("Usage: python3.10 "+sys.argv[0]+" <addr1 sending asset> <addr2 sending algo>")
+        print("Usage: python3.10 "+sys.argv[0]+" <addr sending algo> <addr sending asset>")
         exit()
 
     account1=sys.argv[1]
