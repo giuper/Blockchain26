@@ -33,7 +33,7 @@ def createAsset(AssetName,creatorMNEMFile,managerADDRFile,algodClient):
         reserve=reserveAddr,
         freeze=freezeAddr,
         clawback=clawbackAddr,
-        url="https://github.com/giuper/Blockchain24",
+        url="https://github.com/giuper/Blockchain26",
         decimals=0)
 
     write_to_file([txn],TXFolder+"01-assetCreation.utxn")
