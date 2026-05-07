@@ -1,5 +1,5 @@
 # *Blockchain*
-## UNISA Spring 24 (revised in 25) ##
+## UNISA Spring 26 (based on code from Spring 25) ##
 
 ## Single payer transactions ##
 
@@ -63,4 +63,4 @@
         goal clerk inspect
 ```
 
-*Note:* this code works with version 1.16.0 of algosdk
+*Note:* this code works with version 2.11.1 of algosdk, released in October 2025
