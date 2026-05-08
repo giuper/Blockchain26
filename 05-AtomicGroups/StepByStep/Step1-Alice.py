@@ -16,6 +16,7 @@ def step1(pkAlice,pkBob,algodClient):
         receiver=pkBob,
         amt=1_000_000)
     write_to_file([txn2],TXFolder+"step1Alice.utx")
+    print(txn2)
 
 if __name__=="__main__":
     if (len(sys.argv)!=3):
