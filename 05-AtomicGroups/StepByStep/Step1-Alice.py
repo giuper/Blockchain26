@@ -17,6 +17,7 @@ def step1(pkAlice,pkBob,algodClient):
         amt=1_000_000)
     write_to_file([txn],TXFolder+"step1Alice.utx")
     print(txn)
+    print("Transaction found in file: ",TXFolder+"step1Alice.utx")
 
 if __name__=="__main__":
     if (len(sys.argv)!=3):
