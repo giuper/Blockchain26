@@ -18,12 +18,14 @@ def cgid(fileTxAlice,fileTxBob,fileMnemAlice):
     txnAlice.group=gid
     txnBob.group=gid
     write_to_file([txnAlice],TXFolder+"AliceWithGid.utx")
+    print("Alice unsigned txn with gid in file",TXFolder+"AliceWithGid.utx")
     write_to_file([txnBob],TXFolder+"BibWithGid.utx")
-
+    print("Bob unsigned txn with gid in file",TXFolder+"BobWithGid.utx")
+    
     stxnAlice=txnAlice.sign(skAlice)
     write_to_file([stxnAlice],TXFolder+"AliceWithGid.stx")
-
-
+    print("Alice signed txn with gid in file",TXFolder+"AliceWithGid.stx")
+    print(stxnAlice)
 
 if __name__=="__main__":
     if (len(sys.argv)!=4):
