@@ -19,7 +19,7 @@ def step1(pkAlice,pkBob,algodClient):
 
 if __name__=="__main__":
     if (len(sys.argv)!=3):
-        print("Usage: python3.10 "+sys.argv[0]+" <file Alice addr> <file Bob addr>")
+        print("Usage: python "+sys.argv[0]+" <file Alice addr> <file Bob addr>")
         exit()
 
     with open(sys.argv[1],'r') as f:
