@@ -19,7 +19,7 @@ def sendGroup(ftx1,ftx2,algodClient):
 
 if __name__=="__main__":
     if (len(sys.argv)!=3):
-        print("Usage: python "+sys.argv[0]+" <file with transaction 1> <file with transaction 2>")
+        print("Usage: python "+sys.argv[0]+" <file with Alice's signed tx> <file with Bob's signed tx>")
         exit()
 
     ftx1=sys.argv[1]

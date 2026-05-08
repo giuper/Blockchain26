@@ -4,30 +4,29 @@ from utilities import getSKAddr
 
 TXFolder="TX/"
 
-def cgid(file1,file2,filem):
+def cgid(fileTxAlice,fileTxBob,fileMnemAlice):
 
-    sk1,pk1=getSKAddr(filem)
-    ltxn1=retrieve_from_file(file1)
-    txn1=ltxn1[0]
-    ltxn2=retrieve_from_file(file2)
-    txn2=ltxn2[0]
-    gid=calculate_group_id([txn1,txn2])
-    txn1.group=gid
-    txn2.group=gid
-    write_to_file([txn1],TXFolder+"Step2A1.utx")
-    write_to_file([txn2],TXFolder+"Step2A2.utx")
+    skAlice,pkAlice=getSKAddr(fileMnemAlice)
 
-    stxn1=txn1.sign(sk1)
-    write_to_file([stxn1],TXFolder+"Step2A1.stx")
+    ltxnAlice=retrieve_from_file(fileTxAlice)
+    txnAlice=ltxnAlice[0]
+
+    ltxn2=retrieve_from_file(fileTXBob)
+    txnBob=ltxn2[0]
+
+    gid=calculate_group_id([txnAlice,txnBob])
+    txnAlice.group=gid
+    txnBob.group=gid
+    write_to_file([txnAlice],TXFolder+"AliceWithGid.utx")
+    write_to_file([txnBob],TXFolder+"BibWithGid.utx")
+
+    stxnAlice=txnAlice.sign(skAlice)
+    write_to_file([stxnAlice],TXFolder+"AliceWithGid.stx")
 
 
 
 if __name__=="__main__":
     if (len(sys.argv)!=4):
-        print("Usage: python "+sys.argv[0]+" <file tx1> <file tx2> <mnem sending asset>")
+        print("Usage: python "+sys.argv[0]+" <file txAlice> <file txBob> <file mnem Alice>")
         exit()
-
-    filetx1=sys.argv[1]
-    filetx2=sys.argv[2]
-    filem=sys.argv[3]
-    cgid(filetx1,filetx2,filem)
+    cgid(sys.argv[1],sys.argv[2],sys.argv[3])

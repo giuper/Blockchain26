@@ -5,25 +5,29 @@ from utilities import algodAddress, algodToken
 
 TXFolder="TX/"
 
-def step1(pk1,pk2,algodClient,assetIDX):
+def step1(pkBob,pkAlice,algodClient,assetIDX):
 
     params=algodClient.suggested_params()
     txn1=AssetTransferTxn(
-        sender=pk1,sp=params,receiver=pk2,amt=4,index=assetIDX)
-    write_to_file([txn1],TXFolder+"step1A1.utx")
+        sender=pkBob,
+        sp=params,
+        receiver=pkAlice,
+        amt=4,
+        index=assetIDX)
+    write_to_file([txn1],TXFolder+"step1Bob.utx")
 
 if __name__=="__main__":
     if (len(sys.argv)!=4):
-        print("Usage: python "+sys.argv[0]+" <addr1 sending asset> <addr2 sending algo> <asset index>")
+        print("Usage: python "+sys.argv[0]+" <file Bob addr> <file Alice addr> <asset index>")
         exit()
 
     account1=sys.argv[1]
     account2=sys.argv[2]
-    with open(account1,'r') as f:
-        pk1=f.read()[:58]
-    with open(account2,'r') as f:
-        pk2=f.read()[:58]
+    with open(sys.argv[1],'r') as f:
+        pkBob=f.read()[:58]
+    with open(sys.argv[2],'r') as f:
+        pkAlice=f.read()[:58]
     assetIDX=int(sys.argv[3])
 
     algodClient=algod.AlgodClient(algodToken,algodAddress)
-    step1(pk1,pk2,algodClient,assetIDX)
+    step1(pkBob,pkAlice,algodClient,assetIDX)

@@ -37,10 +37,10 @@ In [folder](./StepByStep) the steps needed to submit a group are implemented in 
 
 1. In the [first step of Alice](./StepByStep/Step1-Alice.py), Alice creates a payment transaction for 1 Algo to Bob 
     and writes it in file TX/step1Alice.utx. This is an unsigned transaction.
-2. In the [first step of Bob](./StepByStep/Step1-Bob.py), Bob creates an asset transfer transaction for 4 coints to Alice
+2. In the [first step of Bob](./StepByStep/Step1-Bob.py), Bob creates an asset transfer transaction for 4 coins to Alice
     and writes it in file TX/step1Bob.utx. This is an unsigned transaction.
 3. In the [second step by Alice](./StepByStep/Step2-Alice.py), Alice computes the group id of the two transactions 
-        created by the previous two steps, adds to both transactions and signs hers. 
+        created by the previous two steps, adds the group id to both transactions and signs hers. 
         The two unsigned transactions with group id are in file TX/AliceWithGid.utx and TX/BobWithGid.utx.
         Alice's signed transaction is in file TX/AliceWithGid.stx.
 4. In the [third step by Bob](./StepByStep/Step3-Bob.py), Bob signs the transaction found in TX/BobWithGid.utx and stores

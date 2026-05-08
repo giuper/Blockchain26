@@ -5,25 +5,26 @@ from utilities import algodAddress, algodToken
 
 TXFolder="TX/"
 
-def step1(pk1,pk2,algodClient):
+def step1(pkAlice,pkBob,algodClient):
 
     params=algodClient.suggested_params()
 
-##account2 pays account1 1 Algo 
+##Alice transfers 1 Algo  to Bob
     txn2=PaymentTxn(
-        sender=pk2,sp=params,receiver=pk1,amt=1_000_000)
-    write_to_file([txn2],TXFolder+"step1A2.utx")
+        sender=pkAlice,
+        sp=params,
+        receiver=pkBob,
+        amt=1_000_000)
+    write_to_file([txn2],TXFolder+"step1Alice.utx")
 
 if __name__=="__main__":
     if (len(sys.argv)!=3):
-        print("Usage: python3.10 "+sys.argv[0]+" <addr sending algo> <addr sending asset>")
+        print("Usage: python3.10 "+sys.argv[0]+" <file Alice addr> <file Bob addr>")
         exit()
 
-    account1=sys.argv[1]
-    account2=sys.argv[2]
-    with open(account1,'r') as f:
-        pk1=f.read()[:58]
-    with open(account2,'r') as f:
-        pk2=f.read()[:58]
+    with open(sys.argv[1],'r') as f:
+        pkAlice=f.read()[:58]
+    with open(sys.argv[2],'r') as f:
+        pkBob=f.read()[:58]
     algodClient=algod.AlgodClient(algodToken,algodAddress)
-    step1(pk1,pk2,algodClient)
+    step1(pkAlice,pkBob,algodClient)
