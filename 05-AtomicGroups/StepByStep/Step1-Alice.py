@@ -10,13 +10,13 @@ def step1(pkAlice,pkBob,algodClient):
     params=algodClient.suggested_params()
 
 ##Alice transfers 1 Algo  to Bob
-    txn2=PaymentTxn(
+    txn=PaymentTxn(
         sender=pkAlice,
         sp=params,
         receiver=pkBob,
         amt=1_000_000)
-    write_to_file([txn2],TXFolder+"step1Alice.utx")
-    print(txn2)
+    write_to_file([txn],TXFolder+"step1Alice.utx")
+    print(txn)
 
 if __name__=="__main__":
     if (len(sys.argv)!=3):
