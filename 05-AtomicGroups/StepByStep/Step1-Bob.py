@@ -8,14 +8,15 @@ TXFolder="TX/"
 def step1(pkBob,pkAlice,algodClient,assetIDX):
 
     params=algodClient.suggested_params()
-    txn1=AssetTransferTxn(
+    txn=AssetTransferTxn(
         sender=pkBob,
         sp=params,
         receiver=pkAlice,
         amt=4,
         index=assetIDX)
-    write_to_file([txn1],TXFolder+"step1Bob.utx")
-
+    write_to_file([txn],TXFolder+"step1Bob.utx")
+    print(txn)
+    
 if __name__=="__main__":
     if (len(sys.argv)!=4):
         print("Usage: python "+sys.argv[0]+" <file Bob addr> <file Alice addr> <asset index>")
