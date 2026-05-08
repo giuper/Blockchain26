@@ -1,7 +1,7 @@
-import sys
+import sys, json
 from algosdk.v2client import algod
 from algosdk.transaction import PaymentTxn, write_to_file
-from utilities import algodAddress, algodToken
+from utilities import algodAddress, algodToken, bytes_to_str
 
 TXFolder="TX/"
 
@@ -16,7 +16,7 @@ def step1(pkAlice,pkBob,algodClient):
         receiver=pkBob,
         amt=1_000_000)
     write_to_file([txn],TXFolder+"step1Alice.utx")
-    print(txn)
+    print(json.dumps(txn.dictify(), indent=4, default=bytes_to_str))
     print("Transaction found in file: ",TXFolder+"step1Alice.utx")
 
 if __name__=="__main__":
