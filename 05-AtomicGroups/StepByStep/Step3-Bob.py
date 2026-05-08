@@ -17,7 +17,7 @@ def signT(filet,filem):
 
 if __name__=="__main__":
     if (len(sys.argv)!=3):
-        print("Usage: python "+sys.argv[0]+" <file with utx with fid> <file with Bob's mnem>")
+        print("Usage: python "+sys.argv[0]+" <file with utx with gid> <file with Bob's mnem>")
         exit()
 
     filet=sys.argv[1]
