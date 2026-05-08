@@ -27,17 +27,23 @@ together
 Next we discuss an example in which we construct and submitted 
 an atomic group of two transactions:
 
-1. Account1 sends 4 instances of an ASA to Account2
-2. Account2 sends 1 Algos to Account1
+1. Bob sends 4 instances of an ASA to Alice
+2. Alice sends 1 Algo to Bob
 
 Script [atomicSwap.py](./atomicSwap.py) takes as input two account addresses and an asset id, and 
 submits the group of transactions.
 
 In [folder](./StepByStep) the steps needed to submit a group are implemented in independent scripts.
 
-1. In the [first step of Account2](./StepByStep/Step1-A1.py), Account1 creates a payment transaction for 1 Algo to Account1.
-2. In the [first step of Account1](./StepByStep/Step1-A2.py), Account2 creates an asset transfer transaction for 4 coints to Account1 and sends the transaction to Account2.
-3. In the [second step by Account2](./StepByStep/Step2.py), Account1 computes the group id of the two transactions computed by the previous two steps, adds to its transactions and signs it. The group id is sent to Account1.
-4. In the [third step by Account1](./StepByStep/Step3.py), Account2 adds the group id to its transaction, signs it and sends to Account2.
-5. In the [fourth step Account1](./StepByStep/Step4.py), Account1 submits the two signed transactions.
+1. In the [first step of Alice](./StepByStep/Step1-Alice.py), Alice creates a payment transaction for 1 Algo to Bob 
+    and writes it in file TX/step1Alice.utx. This is an unsigned transaction.
+2. In the [first step of Bob](./StepByStep/Step1-Bob.py), Bob creates an asset transfer transaction for 4 coints to Alice
+    and writes it in file TX/step1Bob.utx. This is an unsigned transaction.
+3. In the [second step by Alice](./StepByStep/Step2-Alice.py), Alice computes the group id of the two transactions 
+        created by the previous two steps, adds to both transactions and signs hers. 
+        The two unsigned transactions with group id are in file TX/AliceWithGid.utx and TX/BobWithGid.utx.
+        Alice's signed transaction is in file TX/AliceWithGid.stx.
+4. In the [third step by Bob](./StepByStep/Step3-Bob.py), Bob signs the transaction found in TX/BobWithGid.utx and stores
+        it in TX/BobWithGid.stx.
+5. In the [fourth](./StepByStep/Step4.py), the two signed transactions are sent to a node.
 
