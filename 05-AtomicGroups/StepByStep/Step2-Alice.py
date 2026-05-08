@@ -11,7 +11,7 @@ def cgid(fileTxAlice,fileTxBob,fileMnemAlice):
     ltxnAlice=retrieve_from_file(fileTxAlice)
     txnAlice=ltxnAlice[0]
 
-    ltxn2=retrieve_from_file(fileTXBob)
+    ltxn2=retrieve_from_file(fileTxBob)
     txnBob=ltxn2[0]
 
     gid=calculate_group_id([txnAlice,txnBob])
