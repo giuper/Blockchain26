@@ -45,5 +45,5 @@ In [folder](./StepByStep) the steps needed to submit a group are implemented in 
         Alice's signed transaction is in file TX/AliceWithGid.stx.
 4. In the [third step by Bob](./StepByStep/Step3-Bob.py), Bob signs the transaction found in TX/BobWithGid.utx and stores
         it in TX/BobWithGid.stx.
-5. In the [fourth](./StepByStep/Step4.py), the two signed transactions are sent to a node.
+5. In the [fourth step](./StepByStep/Step4.py), the two signed transactions are sent to a node.
 
