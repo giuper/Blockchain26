@@ -120,5 +120,5 @@ as seen in the previous unit.
 ```
 
 ### Deployment ###
-Use the python program of the previous unit to deploy and use the nim application
+First, generate the teal file by running ```python nim.py``` and then use the python program of the previous unit to deploy and use the nim application.
 
