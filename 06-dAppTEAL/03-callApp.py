@@ -1,8 +1,7 @@
 import sys
 import base64
-#from algosdk import account, mnemonic
 from algosdk.v2client import algod
-from algosdk.future.transaction import write_to_file, ApplicationNoOpTxn
+from algosdk.transaction import write_to_file, ApplicationNoOpTxn
 from utilities import algodAddress, algodToken, wait_for_confirmation, getSKAddr
 
 def main(MnemFile,index,algodClient):
@@ -29,13 +28,11 @@ def main(MnemFile,index,algodClient):
 
     print("Global values from the TX output")
     if "global-state-delta" in txResponse:
-        #print(txResponse['global-state-delta'])
         for variable in txResponse['global-state-delta']:
             key=variable['key']
             key=base64.b64decode(key)
             key=key.decode('utf-8')
             print("\tGlobal Key: ",key)
-            #print(variable)
             if 'uint' in variable['value']:
                 print("\tValue     : ",variable['value']['uint'])
             else:
@@ -43,9 +40,7 @@ def main(MnemFile,index,algodClient):
 
     print("Local values from the TX output")
     if "local-state-delta" in txResponse :
-        #print(txResponse['local-state-delta'])
         for variable in txResponse['local-state-delta'][0]['delta']:
-            #key=txResponse['local-state-delta'][0]['delta'][0]['key']
             key=variable['key']
             key=base64.b64decode(key)
             key=key.decode('utf-8')
@@ -76,7 +71,5 @@ if __name__=='__main__':
     MnemFile=sys.argv[1]
     index=int(sys.argv[2])
     algodClient=algod.AlgodClient(algodToken,algodAddress)
-
     main(MnemFile,index,algodClient)
-    
-    
+
