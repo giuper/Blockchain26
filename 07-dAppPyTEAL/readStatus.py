@@ -25,18 +25,23 @@ def check(AddrFile,index,algodClient):
                 key=key.decode('utf-8')
                 #print(key,kk['value'])
                 status[key]=kk['value']['uint']
-    if status['heap']==0:
-        if status['turn']==0:
-            print("Bob won")
+    try:
+        if status['heap']==0:
+            if status['turn']==0:
+                print("Bob won")
+            else:
+                print("Alice won")
         else:
-            print("Alice won")
-    else:
-        if status['turn']==0:
-            print(f"Next: Alice")
-        else:
-            print(f"Next: Bob")
-        print(f"Heap: {status['heap']:3d}")
-        print(f"Max:  {status['max']:3d}")
+            if status['turn']==0:
+                print("Next: Alice")
+            else:
+                print("Next: Bob")
+            print(f"Heap: {status['heap']:3d}")
+            print(f"Max:  {status['max']:3d}")
+    except KeyError:
+        print("Nothing to see here")
+
+
 
 
 if __name__=='__main__':
