@@ -57,7 +57,7 @@ def approval_program(Alice,Bob,Dealer):
 
 if __name__=='__main__':
     if len(sys.argv)!=4:
-        print("Usage: ",sys.argv[0],"<Alice ADDR file> <Bob ADDR file> <Dealer ADDR file>")
+        print("Usage: python",sys.argv[0],"<Alice ADDR file> <Bob ADDR file> <Dealer ADDR file>")
         exit()
 
     with open(sys.argv[1]) as f:
