@@ -120,5 +120,5 @@ as seen in the previous unit.
 ```
 
 ### Deployment ###
-First, install pyteal by running ```pip install pyteal``, then generate the teal file by running ```python nim.py``` and, finally, use the python programs of the previous unit to create and manage the nim application.
+First, install pyteal by running ```pip install pyteal```, then generate the teal file by running ```python nim.py``` and, finally, use the python programs of the previous unit to create and manage the nim application.
 
