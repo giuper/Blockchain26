@@ -35,7 +35,7 @@ def deleteApp(MnemFile,index,algodClient):
 
 if __name__=='__main__':
     if len(sys.argv)!=3:
-        print("usage: python3 "+sys.argv[0]+" <mnem> <app index>")
+        print("usage: python3 "+sys.argv[0]+" <creator mnem> <app index>")
         exit()
 
     MnemFile=sys.argv[1]
