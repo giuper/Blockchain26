@@ -27,7 +27,7 @@ def makeMove(MnemFile,DealerFile,index,move,algodClient):
     
     atomic=[sptxn,smtxn]
     atomicDic=[sptxn.dictify(),smtxn.dictify()]
-    with openi("TX/atomic.stx","w") as f:
+    with open("TX/atomic.stx","w") as f:
             json.dump(atomicDic,f,indent=4)
     print("Transactions saved in file TX/atomic.stx")
     

@@ -1,10 +1,11 @@
 import sys
 import base64
+import json
 import algosdk.encoding as e
 from algosdk import account, mnemonic
 from algosdk.v2client import algod
-from algosdk.future import transaction
-from algosdk.future.transaction import ApplicationOptInTxn, PaymentTxn, write_to_file
+from algosdk.transaction import ApplicationOptInTxn, PaymentTxn
+from algosdk.transaction import calculate_group_id
 from utilities import algodAddress, algodToken, wait_for_confirmation, getSKAddr
 
 def main(MnemFile,index,algodClient):
@@ -17,23 +18,26 @@ def main(MnemFile,index,algodClient):
 
     with open(MnemFile,'r') as f:
         Mnem=f.read()
-    SK=mnemonic.to_private_key(Mnem)
-    playerAddr=account.address_from_private_key(SK)
+    SK,playerAddr=getSKAddr(MnemFile)
     print(f'{"User address: ":32s}{playerAddr:s}')
 
     note="Opt in fee"
     payTx=PaymentTxn(playerAddr,params,appAddr,10_000_000,None,note)
     optTx=ApplicationOptInTxn(playerAddr,params,index)
-    gid=transaction.calculate_group_id([payTx, optTx])
+    gid=calculate_group_id([payTx, optTx])
 
     payTx.group=gid
+    with open("TX/PayOpt.utx","w") as f:
+        json.dump(payTx.dictify(),f,indent=4)
     optTx.group=gid
-    write_to_file([payTx],"TX/PayOpt.utx")
-    write_to_file([optTx],"TX/Opt.utx")
+    with open("TX/Opt.utx","w") as f:
+        json.dump(optTx.dictify(),f,indent=4)
     sPayTx=payTx.sign(SK)
+    with open("TX/PayOpt.stx","w") as f:
+        json.dump(sPayTx.dictify(),f,indent=4)
     sOptTx=optTx.sign(SK)
-    write_to_file([sPayTx],"TX/PayOpt.stx")
-    write_to_file([sOptTx],"TX/Opt.stx")
+    with open("TX/Opt.stx","w") as f:
+        json.dump(sOptTx.dictify(),f,indent=4)
 
 
     txId=algodClient.send_transactions([sPayTx,sOptTx])
