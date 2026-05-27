@@ -24,9 +24,9 @@ Two questions arise:
 ```
 Let us go deeper into this. 
 The ```algosdk.encoding.checksum```
-function calculates a 4-byte cryptographic checksum of a given byte string using the SHA-256 algorithm.
-In this case the byte string hashed is the string ```appID``` followed by the ```index``` encoded as 8 bytes.
-The 4-byte string is then passed to ```encode_address``` to construct an address.
+function calculates the SHA-512 of a given byte string truncated to 256 bits.
+In this case, the byte string hashed is the string ```appID``` followed by the ```index``` encoded as 8 bytes.
+The 32-byte string is then passed to ```encode_address``` to construct an address.
 
     So we modify PyTEAL to check that the OptingIn transaction is 
     an a group with a payment transaction to the application
