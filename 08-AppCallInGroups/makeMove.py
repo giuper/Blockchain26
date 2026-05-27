@@ -1,28 +1,21 @@
-import datetime
 import sys
 import json
-import base64
 from algosdk import account, mnemonic
 from algosdk.v2client import algod
-from algosdk.transaction import write_to_file, PaymentTxn, ApplicationNoOpTxn, calculate_group_id
+from algosdk.transaction import PaymentTxn, ApplicationNoOpTxn, calculate_group_id
 from utilities import algodAddress, algodToken, wait_for_confirmation, getSKAddr
 
 
 def makeMove(MnemFile,DealerFile,index,move,algodClient):
 
     params=algodClient.suggested_params()
-
-    with open(MnemFile,'r') as f:
-        Mnem=f.read()
-    SK=mnemonic.to_private_key(Mnem)
-    Addr=account.address_from_private_key(SK)
-    Pk=mnemonic.to_public_key(Mnem)
+    SK,Addr=getSKAddr(MnemFile)
 
     with open(DealerFile,'r') as f:
         Dealer=f.read()
 
     appArgs=[move.to_bytes(8,'big')]
-    ptxn=PaymentTxn(sender=Pk,sp=params,receiver=Dealer,amt=1_000_000)
+    ptxn=PaymentTxn(sender=Addr,sp=params,receiver=Dealer,amt=1_000_000)
     mtxn=ApplicationNoOpTxn(Addr,params,index,appArgs)
     gid=calculate_group_id([ptxn,mtxn])
 
@@ -33,6 +26,10 @@ def makeMove(MnemFile,DealerFile,index,move,algodClient):
     smtxn=mtxn.sign(SK)
     
     atomic=[sptxn,smtxn]
+    atomicDic=[sptxn.dictify(),smtxn.dictify()]
+    with openi("TX/atomic.stx","w") as f:
+            json.dump(atomicDic,f,indent=4)
+    print("Transactions saved in file TX/atomic.stx")
     
     txId=algodClient.send_transactions(atomic)
     wait_for_confirmation(algodClient,txId,4)
