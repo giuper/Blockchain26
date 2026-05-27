@@ -2,7 +2,7 @@ import sys
 import base64
 import json
 import algosdk.encoding as e
-from algosdk import account, mnemonic
+from algosdk import account, mnemonic, logic
 from algosdk.v2client import algod
 from algosdk.transaction import ApplicationOptInTxn, PaymentTxn
 from algosdk.transaction import calculate_group_id
@@ -15,6 +15,7 @@ def main(MnemFile,index,algodClient):
     appAddr=e.encode_address(e.checksum(b'appID'+index.to_bytes(8, 'big')))
     print(f'{"app id:":32s}{index}')
     print(f'{"app Addr:":32s}{appAddr}')
+    print(f'{"app Addr from logic:":32s}{logic.get_application_address(index)}')
 
     with open(MnemFile,'r') as f:
         Mnem=f.read()
@@ -29,16 +30,18 @@ def main(MnemFile,index,algodClient):
     payTx.group=gid
     with open("TX/PayOpt.utx","w") as f:
         json.dump(payTx.dictify(),f,indent=4)
+
     optTx.group=gid
     with open("TX/Opt.utx","w") as f:
         json.dump(optTx.dictify(),f,indent=4)
+
     sPayTx=payTx.sign(SK)
     with open("TX/PayOpt.stx","w") as f:
         json.dump(sPayTx.dictify(),f,indent=4)
+
     sOptTx=optTx.sign(SK)
     with open("TX/Opt.stx","w") as f:
         json.dump(sOptTx.dictify(),f,indent=4)
-
 
     txId=algodClient.send_transactions([sPayTx,sOptTx])
     wait_for_confirmation(algodClient,txId,4)
