@@ -22,6 +22,11 @@ Two questions arise:
     import algosdk.encoding as e
     appAddr=e.encode_address(e.checksum(b'appID'+index.to_bytes(8, 'big')))
 ```
+Let us go deeper into this. 
+The ```algosdk.encoding.checksum```
+function calculates a 4-byte cryptographic checksum of a given byte string using the SHA-256 algorithm.
+In this case the byte string hashed is the string ```appID``` followed by ```index```
+Not sure...
 
     So we modify PyTEAL to check that the OptingIn transaction is 
     an a group with a payment transaction to the application
