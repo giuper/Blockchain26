@@ -1,0 +1,57 @@
+import sys, base64, json
+from algosdk import account, mnemonic, logic
+from algosdk.v2client import algod
+from algosdk.transaction import ApplicationOptInTxn, PaymentTxn, calculate_group_id
+from utilities import algodAddress, algodToken, wait_for_confirmation, getSKAddr
+
+def main(MnemFile,index,algodClient):
+
+    print(f'{"Opting in: ":32s}{index:d}')
+
+#compute escort address for app from its index
+    AppAddr=logic.get_application_address(index)
+    print(f'{"App Addr:":32s}{AppAddr}')
+
+#extract user sk and addr from Mnem
+    SK,Addr=getSKAddr(MnemFile)
+    print(f'{"User address: ":32s}{Addr:s}')
+
+    params=algodClient.suggested_params()
+
+#create the two txns
+    utxPay=PaymentTxn(sender=Addr,sp=params,receiver=AppAddr,amt=1_000_000,note=b"Paying fee for NIM")
+    utxOpt=ApplicationOptInTxn(Addr,params,index)
+
+#compute the gid of the two txns
+    gid=calculate_group_id([utxPay,utxOpt])
+
+#add the gid to the two txns
+    utxPay.group=gid
+    utxOpt.group=gid
+
+
+
+#sign the two transactions
+    stxPay=utxPay.sign(SK)
+    stxOpt=utxOpt.sign(SK)
+
+    atomicDic=[stxPay.dictify(),stxOpt.dictify()]
+    with open("TX/optinGroup.stx","w") as f:
+            json.dump(atomicDic,f,indent=4)
+    print("Transactions saved in file TX/optinGroup.stx")
+
+    txId=algodClient.send_transactions([stxPay,stxOpt])
+    wait_for_confirmation(algodClient,txId,4)
+    txResponse=algodClient.pending_transaction_info(txId)
+
+if __name__=='__main__':
+    if len(sys.argv)!=3:
+        print("usage: python3 "+sys.argv[0]+" <mnem> <app index>")
+        exit()
+
+    MnemFile=sys.argv[1]
+    index=int(sys.argv[2])
+    algodClient=algod.AlgodClient(algodToken,algodAddress)
+    main(MnemFile,index,algodClient)
+    
+    
