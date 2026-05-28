@@ -3,7 +3,7 @@ import json
 import base64
 from algosdk import account, mnemonic
 from algosdk.v2client import algod
-from algosdk.future.transaction import write_to_file, ApplicationDeleteTxn
+from algosdk.transaction import write_to_file, ApplicationDeleteTxn
 from utilities import algodAddress, algodToken, wait_for_confirmation, getSKAddr
 
 def deleteApp(MnemFile,index,algodClient):
