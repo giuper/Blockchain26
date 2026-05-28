@@ -1,14 +1,8 @@
 from algosdk.v2client import algod
 from algosdk import mnemonic, account
-import algosdk
 
 algodAddress="https://testnet-api.algonode.cloud"
-algodAddress='https://testnet-api.4160.nodely.dev'
-algodToken=''
-
-def clean_for_json(tx_obj):
-    b64_str = algosdk.encoding.msgpack_encode(tx_obj)
-    return algosdk.encoding.msgpack_decode(b64_str)
+algodToken="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 
 def getSKAddr(MnemFile):
     with open(MnemFile,'r') as f:
@@ -24,7 +18,7 @@ def wait_for_confirmation(client,transaction_id,timeout):
     number of rounds have passed.
     Args:
         transaction_id (str): the transaction to wait for
-        timeout (int): maximum number of rounds to wait
+        timeout (int): maximum number of rounds to wait    
     Returns:
         dict: pending transaction information, or throws an error if the transaction
             is not confirmed or rejected in the next timeout rounds
@@ -36,13 +30,13 @@ def wait_for_confirmation(client,transaction_id,timeout):
         try:
             pending_txn = client.pending_transaction_info(transaction_id)
         except Exception:
-            return
+            return 
         if pending_txn.get("confirmed-round", 0) > 0:
             return pending_txn
-        elif pending_txn["pool-error"]:
+        elif pending_txn["pool-error"]:  
             raise Exception(
                 'pool error: {}'.format(pending_txn["pool-error"]))
-        client.status_after_block(current_round)
+        client.status_after_block(current_round)                   
         current_round += 1
     raise Exception(
         'pending tx not found in timeout rounds, timeout value = : {}'.format(timeout))

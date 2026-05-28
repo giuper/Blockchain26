@@ -8,7 +8,7 @@ def main(MnemFile,index,algodClient):
 
     print(f'{"Opting in: ":32s}{index:d}')
 
-#compute escort address for app from its index
+#compute escrow address for app from its index
     AppAddr=logic.get_application_address(index)
     print(f'{"App Addr:":32s}{AppAddr}')
 
@@ -35,11 +35,6 @@ def main(MnemFile,index,algodClient):
     stxPay=utxPay.sign(SK)
     stxOpt=utxOpt.sign(SK)
 
-    atomicDic=[stxPay.dictify(),stxOpt.dictify()]
-    with open("TX/optinGroup.stx","w") as f:
-            json.dump(atomicDic,f,indent=4)
-    print("Transactions saved in file TX/optinGroup.stx")
-
     txId=algodClient.send_transactions([stxPay,stxOpt])
     wait_for_confirmation(algodClient,txId,4)
     txResponse=algodClient.pending_transaction_info(txId)
@@ -53,5 +48,5 @@ if __name__=='__main__':
     index=int(sys.argv[2])
     algodClient=algod.AlgodClient(algodToken,algodAddress)
     main(MnemFile,index,algodClient)
-    
-    
+
+

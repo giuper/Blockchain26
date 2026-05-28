@@ -1,8 +1,7 @@
 import sys
 import json
 import base64
-from algosdk import account, mnemonic
-import algosdk.encoding as e
+from algosdk import logic
 from algosdk.v2client import algod
 from algosdk.transaction import write_to_file
 from algosdk.transaction import ApplicationCreateTxn, OnComplete, StateSchema
@@ -35,7 +34,7 @@ def main(creatorMnemFile,approvalFile,algodClient):
         clearProgramSource=f.read()
     compile_response=algodClient.compile(clearProgramSource)
     clearProgram=base64.b64decode(compile_response["result"])
-    
+
     print(f'{"Reading approval file:":32s}{approvalFile:s}')
     with open(approvalFile,'r') as f:
         approvalProgramSource=f.read()
@@ -44,7 +43,7 @@ def main(creatorMnemFile,approvalFile,algodClient):
     approvalProgram=base64.b64decode(approvalProgramResponse['result'])
     approvalProgramAddress=approvalProgramResponse["hash"]
     print(f'{"Hash approval file:":32s}{approvalProgramAddress:s}')
-    
+
     params=algodClient.suggested_params()
     utx=ApplicationCreateTxn(
         creatorAddr,
@@ -66,10 +65,10 @@ def main(creatorMnemFile,approvalFile,algodClient):
     txId=algodClient.send_transactions([stx])
     wait_for_confirmation(algodClient,txId,4)
     txResponse=algodClient.pending_transaction_info(txId)
+
     appId=txResponse['application-index']
     print(f'{"App id:":32s}{appId:d}');
-
-    appaddr=e.encode_address(e.checksum(b'appID'+appId.to_bytes(8, 'big')))
+    appaddr=logic.get_application_address(appId)
     print(f'{"App address:":32s}{appaddr:32}')
 
 if __name__=='__main__':
@@ -82,6 +81,6 @@ if __name__=='__main__':
     algodClient=algod.AlgodClient(algodToken,algodAddress)
     main(creatorMnemFile,approvalFile,algodClient)
 
-    
 
-    
+
+

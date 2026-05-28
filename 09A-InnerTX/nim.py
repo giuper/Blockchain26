@@ -24,13 +24,13 @@ def approval_program(Alice,Bob,Dealer):
     handle_updateapp=If(Txn.sender()==Dealer).Then(Return(Int(1))).Else(Return(Int(0)))
     handle_deleteapp=If(Txn.sender()==Dealer).Then(Return(Int(1))).Else(Return(Int(0)))
 
-    handle_noop=If(Seq([arg.store(Btoi(Gtxn[1].application_args[0])),
+    handle_noop=If(Seq([arg.store(Btoi(txn.application_args[0])),
                     And(arg.load()<=App.globalGet(Bytes("max")),
                         arg.load()>Int(0),
                         arg.load()<=App.globalGet(Bytes("heap")),
                         Or(
-                            And(Gtxn[1].sender()==Alice,App.globalGet(Bytes("turn"))==Int(0)),
-                            And(Gtxn[1].sender()==Bob,App.globalGet(Bytes("turn"))==Int(1))
+                            And(txn.sender()==Alice,App.globalGet(Bytes("turn"))==Int(0)),
+                            And(txn.sender()==Bob,App.globalGet(Bytes("turn"))==Int(1))
                           )
                     )
                 ])
@@ -40,8 +40,19 @@ def approval_program(Alice,Bob,Dealer):
             App.globalPut(Bytes("heap"),Minus(t.load(),Btoi(Gtxn[1].application_args[0]))),
             t.store(App.globalGet(Bytes("turn"))),
             App.globalPut(Bytes("turn"),Minus(Int(1),t.load())),
-            Approve()
-           ])).Else(Reject())
+            If(App.globalGet(Bytes("heap"))==Int(0)).Then(
+                Seq([
+                InnerTxnBuilder.Begin(),
+                InnerTxnBuilder.SetFields({
+                    TxnField.type_enum: TxnType.Payment,
+                    TxnField.amount: Int(1_500_000),
+                    TxnField.receiver: Txn.sender()
+                }),
+                InnerTxnBuilder.Submit(),
+                Approve(),
+           ])
+        ).Else(Approve())]
+    )).Else(Reject())
 
     program = Cond(
         [Txn.application_id() == Int(0), handle_creation],
@@ -52,7 +63,7 @@ def approval_program(Alice,Bob,Dealer):
         [Txn.on_completion() == OnComplete.NoOp, handle_noop]
     )
 
-    return compileTeal(program, Mode.Application, version=10)
+    return compileTeal(program,Mode.Application,version=10)
 
 if __name__=='__main__':
     if len(sys.argv)!=4:
