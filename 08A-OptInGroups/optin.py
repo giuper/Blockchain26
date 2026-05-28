@@ -29,15 +29,14 @@ def main(MnemFile,index,algodClient):
     utxPay.group=gid
     utxOpt.group=gid
 
-
-
 #sign the two transactions
     stxPay=utxPay.sign(SK)
     stxOpt=utxOpt.sign(SK)
 
     txId=algodClient.send_transactions([stxPay,stxOpt])
-    wait_for_confirmation(algodClient,txId,4)
-    txResponse=algodClient.pending_transaction_info(txId)
+    confirmedtx=wait_for_confirmation(algodClient,txId,4)
+    print("Transaction information:\n{}".format(json.dumps(confirmedtx, indent=4)))
+
 
 if __name__=='__main__':
     if len(sys.argv)!=3:
