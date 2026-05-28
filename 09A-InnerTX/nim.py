@@ -24,20 +24,20 @@ def approval_program(Alice,Bob,Dealer):
     handle_updateapp=If(Txn.sender()==Dealer).Then(Return(Int(1))).Else(Return(Int(0)))
     handle_deleteapp=If(Txn.sender()==Dealer).Then(Return(Int(1))).Else(Return(Int(0)))
 
-    handle_noop=If(Seq([arg.store(Btoi(txn.application_args[0])),
+    handle_noop=If(Seq([arg.store(Btoi(Txn.application_args[0])),
                     And(arg.load()<=App.globalGet(Bytes("max")),
                         arg.load()>Int(0),
                         arg.load()<=App.globalGet(Bytes("heap")),
                         Or(
-                            And(txn.sender()==Alice,App.globalGet(Bytes("turn"))==Int(0)),
-                            And(txn.sender()==Bob,App.globalGet(Bytes("turn"))==Int(1))
+                            And(Txn.sender()==Alice,App.globalGet(Bytes("turn"))==Int(0)),
+                            And(Txn.sender()==Bob,App.globalGet(Bytes("turn"))==Int(1))
                           )
                     )
                 ])
     ).Then(
         Seq([
             t.store(App.globalGet(Bytes("heap"))),
-            App.globalPut(Bytes("heap"),Minus(t.load(),Btoi(Gtxn[1].application_args[0]))),
+            App.globalPut(Bytes("heap"),Minus(t.load(),Btoi(Txn.application_args[0]))),
             t.store(App.globalGet(Bytes("turn"))),
             App.globalPut(Bytes("turn"),Minus(Int(1),t.load())),
             If(App.globalGet(Bytes("heap"))==Int(0)).Then(
