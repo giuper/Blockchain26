@@ -63,13 +63,16 @@ def main(creatorMnemFile,approvalFile,algodClient):
     txId=stx.transaction.get_txid()
     print(f'{"Transaction id:":32s}{txId:s}')
     txId=algodClient.send_transactions([stx])
-    wait_for_confirmation(algodClient,txId,4)
-    txResponse=algodClient.pending_transaction_info(txId)
+    confirmed_txn=wait_for_confirmation(algodClient,txId,4)
 
+    txResponse=algodClient.pending_transaction_info(txId)
     appId=txResponse['application-index']
     print(f'{"App id:":32s}{appId:d}');
     appaddr=logic.get_application_address(appId)
     print(f'{"App address:":32s}{appaddr:32}')
+
+    print("Transaction information:\n{}".format(
+        json.dumps(confirmed_txn["txn"]["txn"], indent=4)))
 
 if __name__=='__main__':
     if len(sys.argv)!=3:
