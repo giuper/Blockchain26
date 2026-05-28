@@ -4,10 +4,8 @@ import base64
 from algosdk import account, mnemonic
 import algosdk.encoding as e
 from algosdk.v2client import algod
-from algosdk.future.transaction import write_to_file
-from algosdk.future.transaction import ApplicationCreateTxn
-from algosdk.future.transaction import OnComplete
-from algosdk.future.transaction import StateSchema
+from algosdk.transaction import write_to_file
+from algosdk.transaction import ApplicationCreateTxn, OnComplete, StateSchema
 from utilities import algodAddress, algodToken, wait_for_confirmation, getSKAddr
 
 def compile_program(client: algod.AlgodClient, source_code: str):
