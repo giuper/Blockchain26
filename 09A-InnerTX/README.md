@@ -36,7 +36,7 @@ The whole process is hidden in the ```logic``` package by the following call
 We modify the PyTEAL source to check that the OptingIn transaction is part of a group of two transactions and the first transaction is a payment transaction of one Algo
 to the escrow account of the application
 
-```
+```python
    handle_optin=If(And(Global.group_size()==Int(2),
                         Gtxn[0].type_enum()==TxnType.Payment,
                         Gtxn[0].receiver()==Global.current_application_address(),
@@ -63,7 +63,6 @@ to the escrow account of the application
              InnerTxnBuilder.Submit(),
     ```
 and the second transaction close the escrow account of the application and sends the curent balance to the creator
-
 ```python
     InnerTxnBuilder.Begin(),
     InnerTxnBuilder.SetFields({
