@@ -40,6 +40,7 @@ def approval_program(Alice,Bob,Dealer):
             App.globalPut(Bytes("heap"),Minus(t.load(),Btoi(Txn.application_args[0]))),
             t.store(App.globalGet(Bytes("turn"))),
             App.globalPut(Bytes("turn"),Minus(Int(1),t.load())),
+
             If(App.globalGet(Bytes("heap"))==Int(0)).Then(
                 Seq([
                 InnerTxnBuilder.Begin(),
