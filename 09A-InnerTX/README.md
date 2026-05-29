@@ -76,7 +76,7 @@ and the second transaction close the escrow account of the application and sends
 ## Recap ##
 We now spell out the steps to use the NIM application on Algorand
 
-1. Run the pyTEAL [script](nim.py) to obtain the file ``nim.teal`` The command line requires the (filename containing) the addresses of the two players and the address of the creator of the app.
+1. Run the pyTEAL [script](nim01.py) to obtain the file ``nim.teal`` The command line requires the (filename containing) the addresses of the two players and the address of the creator of the app.
 2. Deploy the application by running the script [01-createApp](../06-dAppTEAL/01-createApp.py) by assing the following two arguments on the command line
     * (the name of the file containing) the mnem of the creator
     * the TEAL approval program (in our case ``nim.teal`` produced at the previous step).
