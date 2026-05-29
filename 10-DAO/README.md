@@ -18,7 +18,7 @@ At this stage, the (files containing) the addresses of the three founders are sp
 2. The DAO is created by having one of the founder run [create.py](create.py).
     
 3. The DAO is started by running [start.py](start.py) that calls the application by passing *s* (for start) as a parameter.
-and creates the assets. For example,the following is the PyTEAL code for creating the *FOSAD22Token* asset.
+and creates the assets. For example,the following is the PyTEAL code for creating the *BC26UNISA* asset.
 
 ```python
      InnerTxnBuilder.Begin(),
@@ -27,8 +27,8 @@ and creates the assets. For example,the following is the PyTEAL code for creatin
         TxnField.config_asset_total: Int(1_000_000),
         TxnField.config_asset_decimals: Int(3),
         TxnField.config_asset_name: Bytes(DAOtokenName),
-        TxnField.config_asset_unit_name: Bytes("fsd3"),
-        TxnField.config_asset_url: Bytes("https://sites.google.com/uniurb.it/fosad/home/fosad-2022"),
+        TxnField.config_asset_unit_name: Bytes("B26"),
+        TxnField.config_asset_url: Bytes("https://github.com/giuper/Blockchain26"),
         TxnField.config_asset_manager: Global.current_application_address(),
         TxnField.config_asset_reserve: Global.current_application_address(),
         TxnField.config_asset_freeze: Global.current_application_address(),
