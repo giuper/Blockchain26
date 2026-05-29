@@ -43,7 +43,8 @@ to the escrow account of the application
                         Gtxn[0].amount()>=Int(1_000_000),
                     )).Then(Approve()).Else(Reject())
 ```
-In pyteal ```Global.current_application_address()```  returns the address of the escrow account of the application.
+
+```Global.current_application_address()```  returns the address of the escrow account of the application.
 
 2. How can the application send out Algo?
     
