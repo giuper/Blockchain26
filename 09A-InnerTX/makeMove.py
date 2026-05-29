@@ -36,7 +36,13 @@ def main(MnemFile,CreatorAddFile,idx,move,algodClient):
     txId=stx.transaction.get_txid()
     print(f'{"Transaction id:":32s}{txId:s}')
     algodClient.send_transactions([stx])
-    wait_for_confirmation(algodClient,txId,4)
+
+    confirmedtx=wait_for_confirmation(algodClient,txId,4)
+    dumpFile="TX/move.stx"
+    print(f'{"Transaction information in:":32s}{dumpFile:s}')
+    with open(dumpFile,"w") as f:
+        json.dump(confirmedtx["txn"]["txn"],f,indent=4)
+
     txResponse=algodClient.pending_transaction_info(txId)
     idfromtx=txResponse['txn']['txn']['apid']
     print(f'{"Calling app-id: ":32s}{idfromtx:d}')  

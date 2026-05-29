@@ -1,5 +1,5 @@
-import sys, base64, json
-from algosdk import account, mnemonic, logic
+import sys, json
+from algosdk import  logic
 from algosdk.v2client import algod
 from algosdk.transaction import ApplicationOptInTxn, PaymentTxn, calculate_group_id
 from utilities import algodAddress, algodToken, wait_for_confirmation, getSKAddr
@@ -19,7 +19,7 @@ def main(MnemFile,index,algodClient):
     params=algodClient.suggested_params()
 
 #create the two txns
-    utxPay=PaymentTxn(sender=Addr,sp=params,receiver=AppAddr,amt=1_000_000,note=b"Paying fee for NIM")
+    utxPay=PaymentTxn(sender=Addr,sp=params,receiver=AppAddr,amt=1_000_000,note=b"Playing fee for NIM")
     utxOpt=ApplicationOptInTxn(Addr,params,index)
 
 #compute the gid of the two txns
@@ -35,12 +35,15 @@ def main(MnemFile,index,algodClient):
 
     txId=algodClient.send_transactions([stxPay,stxOpt])
     confirmedtx=wait_for_confirmation(algodClient,txId,4)
-    print("Transaction information:\n{}".format(json.dumps(confirmedtx, indent=4)))
+    dumpFile="TX/optin.stx"
+    print(f'{"Transaction information in:":32s}{dumpFile:s}')
+    with open(dumpFile,"w") as f:
+        json.dump(confirmedtx["txn"]["txn"],f,indent=4)
 
 
 if __name__=='__main__':
     if len(sys.argv)!=3:
-        print("usage: python3 "+sys.argv[0]+" <mnem> <app index>")
+        print("usage: python3 "+sys.argv[0]+" <file containg mnem> <app index>")
         exit()
 
     MnemFile=sys.argv[1]
