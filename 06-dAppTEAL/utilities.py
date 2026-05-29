@@ -6,10 +6,6 @@ algodAddress="https://testnet-api.algonode.cloud"
 algodAddress='https://testnet-api.4160.nodely.dev'
 algodToken=''
 
-def clean_for_json(tx_obj):
-    b64_str = algosdk.encoding.msgpack_encode(tx_obj)
-    return algosdk.encoding.msgpack_decode(b64_str)
-
 def getSKAddr(MnemFile):
     with open(MnemFile,'r') as f:
         Mnem=f.read()

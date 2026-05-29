@@ -3,7 +3,6 @@ import json
 import base64
 from algosdk import logic
 from algosdk.v2client import algod
-from algosdk.transaction import write_to_file
 from algosdk.transaction import ApplicationCreateTxn, OnComplete, StateSchema
 from utilities import algodAddress, algodToken, wait_for_confirmation, getSKAddr
 
@@ -11,8 +10,6 @@ def main(creatorMnemFile,approvalFile,algodClient):
 
     creatorSK,creatorAddr=getSKAddr(creatorMnemFile)
     print(f'{"Creator address: ":32s}{creatorAddr:s}')
-
-    #on_complete=OnComplete.NoOpOC.real
 
     # declare application state storage (immutable)
     # define global schema
@@ -68,9 +65,6 @@ def main(creatorMnemFile,approvalFile,algodClient):
     print(f'{"Transaction information in:":32s}{dumpFile:s}')
     with open(dumpFile,"w") as f:
         json.dump(confirmed_txn["txn"]["txn"],f, indent=4)
-
-    ##print("Transaction information:\n{}".format(
-        ##json.dumps(confirmed_txn["txn"]["txn"], indent=4)))
 
 if __name__=='__main__':
     if len(sys.argv)!=3:
