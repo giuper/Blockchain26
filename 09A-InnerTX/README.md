@@ -4,12 +4,12 @@
 ## Inner transactions ##
 
 Furthering our NIM implementation on Algorand, let us consider 
-one extra feature. Now that players pay for each move it seems only fair
+one extra feature. Now that players pay to opt-in it seems only fair
 that they receive something in return.
 Let us then modify our NIM so that each player pays a fee to the
 application (not to the creator of the application as in the previous
 case) when they optin the app and the winning player receives
-some Algo at the end of the game from the application. 
+some Algo at the end of the game from the application and the remainder goes to the creator. 
 
 Two questions arise:
 
@@ -48,25 +48,31 @@ to the escrow account of the application
 
 2. How can the application send out Algo?
     
-    We add to the code for ```Noop``` a check for ```heap==0```.
-    In this case the application generate an *inner transaction* that
-    transfers some Algos to the sender of the application call being
-    executed.
+    We add to the code for ```NoOp``` a check for ```heap==0```.
+    In this case the application generate two *inner transactions*
+    The first transfers some Algos to the sender of the application call being
+    executed (that is, the winner of the game)
 
-```
-    If(App.globalGet(Bytes("heap"))==Int(0)).Then(
-        Seq([
+```python
              InnerTxnBuilder.Begin(),
              InnerTxnBuilder.SetFields({
                 TxnField.type_enum: TxnType.Payment,
-                TxnField.amount: Int(899_000),
+                TxnField.amount: Int(1_500_000),
                 TxnField.receiver: Txn.sender()
              }),
              InnerTxnBuilder.Submit(),
-             Approve()])
-     ).Else(Approve())
-```
+    ```
+and the second transaction close the escrow account of the application and sends the curent balance to the creator
 
+```python
+    InnerTxnBuilder.Begin(),
+    InnerTxnBuilder.SetFields({
+       TxnField.type_enum: TxnType.Payment,
+       TxnField.amount: Int(0),
+       TxnField.close_remainder_to: Dealer
+       }),
+      InnerTxnBuilder.Submit(),
+```
 
 ## Recap ##
 We now spell out the steps to use the NIM application on Algorand
@@ -77,3 +83,4 @@ We now spell out the steps to use the NIM application on Algorand
     * the TEAL approval program (in our case ``nim.teal`` produced at the previous step).
 Note that the script returns the application index to be used in subsequent calls.
 3. The two players optin the application by running the opt-in [script](../08A-OptInGroups/optin.py) by passing the mnem of the user and the application index.
+4. Players alternate in making moves by running [makeMove](./makeMove.py). For each move the user must specify the mnem file, the application index, the move, and the creator addr.
