@@ -75,3 +75,5 @@ We now spell out the steps to use the NIM application on Algorand
 2. Deploy the application by running the script [01-createApp](../06-dAppTEAL/01-createApp.py) by assing the following two arguments on the command line
     * (the name of the file containing) the mnem of the creator
     * the TEAL approval program (in our case ``nim.teal`` produced at the previous step).
+Note that the script returns the application index to be used in subsequent calls.
+3. The two players optin the application by running the opt-in [script](../08A-OptInGroups) by passing the mnem of the user and the application index.
