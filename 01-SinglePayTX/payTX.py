@@ -66,7 +66,7 @@ def main():
 
     receiverAddrF=sys.argv[2]
     with open(receiverAddrF,'r') as f:
-        rAddr=f.read()
+        rAddr=f.read()[:58]
     print(f'{"Receiver address:":32s}{rAddr:s}')
 
     if (amount<=balance):
