@@ -61,7 +61,7 @@ to the escrow account of the application
                 TxnField.receiver: Txn.sender()
              }),
              InnerTxnBuilder.Submit(),
-    ```
+```
 and the second transaction close the escrow account of the application and sends the curent balance to the creator
 ```python
     InnerTxnBuilder.Begin(),
