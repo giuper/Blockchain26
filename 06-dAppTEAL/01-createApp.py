@@ -7,16 +7,12 @@ from algosdk.transaction import write_to_file
 from algosdk.transaction import ApplicationCreateTxn, OnComplete, StateSchema
 from utilities import algodAddress, algodToken, wait_for_confirmation, getSKAddr
 
-def compile_program(client: algod.AlgodClient, source_code: str):
-    compile_response = client.compile(source_code)
-    return base64.b64decode(compile_response["result"])
-
 def main(creatorMnemFile,approvalFile,algodClient):
 
     creatorSK,creatorAddr=getSKAddr(creatorMnemFile)
     print(f'{"Creator address: ":32s}{creatorAddr:s}')
 
-    on_complete=OnComplete.NoOpOC.real
+    #on_complete=OnComplete.NoOpOC.real
 
     # declare application state storage (immutable)
     # define global schema
@@ -29,7 +25,7 @@ def main(creatorMnemFile,approvalFile,algodClient):
     local_bytes=1
     localSchema=StateSchema(local_ints,local_bytes)
 
-    print(f'{"Compiling the clear program:"}')
+    print(f'{"Compiling the clear program:":32s}{"TEAL/clear.teal":s}')
     with open("TEAL/clear.teal",'r') as f:
         clearProgramSource=f.read()
     compile_response=algodClient.compile(clearProgramSource)
@@ -41,6 +37,7 @@ def main(creatorMnemFile,approvalFile,algodClient):
     print(f'{"Compiling approval file:":32s}')
     approvalProgramResponse=algodClient.compile(approvalProgramSource)
     approvalProgram=base64.b64decode(approvalProgramResponse['result'])
+
     approvalProgramAddress=approvalProgramResponse["hash"]
     print(f'{"Hash approval file:":32s}{approvalProgramAddress:s}')
 
@@ -54,11 +51,7 @@ def main(creatorMnemFile,approvalFile,algodClient):
         global_schema=globalSchema,
         local_schema=localSchema,
     )
-    write_to_file([utx],"TX/create.utx")
-
-
     stx=utx.sign(creatorSK)
-    write_to_file([stx],"TX/create.stx")
 
     txId=stx.transaction.get_txid()
     print(f'{"Transaction id:":32s}{txId:s}')
@@ -71,8 +64,13 @@ def main(creatorMnemFile,approvalFile,algodClient):
     appaddr=logic.get_application_address(appId)
     print(f'{"App address:":32s}{appaddr:32}')
 
-    print("Transaction information:\n{}".format(
-        json.dumps(confirmed_txn["txn"]["txn"], indent=4)))
+    dumpFile="TX/create.stx"
+    print(f'{"Transaction information in:":32s}{dumpFile:s}')
+    with open(dumpFile,"w") as f:
+        json.dump(confirmed_txn["txn"]["txn"],f, indent=4)
+
+    ##print("Transaction information:\n{}".format(
+        ##json.dumps(confirmed_txn["txn"]["txn"], indent=4)))
 
 if __name__=='__main__':
     if len(sys.argv)!=3:
