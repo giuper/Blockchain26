@@ -73,5 +73,5 @@ We now spell out the steps to use the NIM application on Algorand
 
 1. Compile the pyTEAL [source](nim.py) to obtain the file ``nim.teal``
 2. Deploy the application by running the script [01-createApp](../06-dAppTEAL/01-createApp.py) by assing the following two arguments on the command line
-    2.1 (the name of the file containing) the mnem of the creator
-    2.2 the teal approval program (in our case ``nim.teal`` produced at the previous step).
+    * (the name of the file containing) the mnem of the creator
+    * the teal approval program (in our case ``nim.teal`` produced at the previous step).
