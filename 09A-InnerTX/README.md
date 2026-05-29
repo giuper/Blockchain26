@@ -15,8 +15,8 @@ Two questions arise:
 
 1. How can the application receive Algo?
 
-    This is very simple as an application is associated to an 
-    address that is computed from its index in the following way
+    This is very simple as an application is associated to an *escrow account* whose address is
+   computed from its index in the following way. 
 
 ```python
     import algosdk.encoding as e
@@ -27,9 +27,15 @@ The ```algosdk.encoding.checksum```
 function calculates the SHA-512 of a given byte string truncated to 256 bits.
 In this case, the byte string hashed is the string ```appID``` followed by the ```index``` encoded as 8 bytes.
 The 32-byte string is then passed to ```encode_address``` to construct an address.
+The whole process is hidden in the ```logic``` package by the following call
+
+```python
+    from algosdk import logic
+    appAddr=logic.get_application_address(index)
+```
 
     So we modify PyTEAL to check that the OptingIn transaction is 
-    an a group with a payment transaction to the application
+    an a group with a payment transaction to the escrow account of the application
 
 ```
    handle_optin=If(And(Global.group_size()==Int(2),
@@ -38,7 +44,7 @@ The 32-byte string is then passed to ```encode_address``` to construct an addres
                         Gtxn[0].amount()>=Int(500_000),
                     )).Then(Approve()).Else(Reject())
 ```
-
+In pyteal ```Global.current_application_address()```  returns the address of the escrow account of the application.
 
 2. How can the application send out Algo?
     
