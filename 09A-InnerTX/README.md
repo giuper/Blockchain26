@@ -72,3 +72,4 @@ to the escrow account of the application
 We now spell out the steps to use the NIM application on Algorand
 
 1. Compile the pyTEAL [source](nim.py) to obtain the file ``nim.teal``
+2. Deploy the application by running the script [01-createApp](../06-dAppTEAL/01-createApp.py)
