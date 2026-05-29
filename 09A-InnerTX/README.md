@@ -66,3 +66,9 @@ to the escrow account of the application
              Approve()])
      ).Else(Approve())
 ```
+
+
+## Recap ##
+We now spell out the steps to use the NIM application on Algorand
+
+1. Compile the pyTEAL [source](nim.py) to obtain the file ``nim.teal``
