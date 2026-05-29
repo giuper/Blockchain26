@@ -33,7 +33,6 @@ The whole process is hidden in the ```logic``` package by the following call
     from algosdk import logic
     appAddr=logic.get_application_address(index)
 ```
-
     So we modify PyTEAL to check that the OptingIn transaction is 
     an a group with a payment transaction to the escrow account of the application
 
