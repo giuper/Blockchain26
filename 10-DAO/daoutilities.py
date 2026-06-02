@@ -4,7 +4,7 @@ from algosdk import account
 DAOTokenName="B26Unisa"
 DAOTokenUnit="B26"
 DAOGovName="B26Unisa-Gov"
-DAOGovUnit="B2-Gov"
+DAOGovUnit="B26-Gov"
 DAOURL="https://github.com/giuper/Blockchain26"
 
 #return list of all assets
