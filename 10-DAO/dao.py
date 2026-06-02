@@ -177,7 +177,7 @@ def approval_program(Alice,Bob,Charlie):
         [Txn.on_completion()==OnComplete.NoOp, handle_noop]
     )
 
-    return compileTeal(program, Mode.Application, version=5)
+    return compileTeal(program, Mode.Application, version=10)
 
 if __name__=='__main__':
     if len(sys.argv)!=4:
