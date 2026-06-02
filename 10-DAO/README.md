@@ -1,21 +1,18 @@
 # *Blockchain*
-## UNISA Spring 24 ##
+## UNISA Spring 26 (based on code from Spring 25) ##
 
 ## A Simple DAO (Distributed Autonomous Organization) ##
 
 This contains a simple implementation of a DAO.
-The DAO mints and owns a certain number of *Fosad22Token*
-that are sold in exchange for Algo's. 
-The price is set by the holders of the governor token *FOSAD22-Gov*.
-Initially the governors coincide with the three founders of the DAO but they can decide to
-exchange the governor token for Algo's or other assets.
+The DAO mints and owns a certain number of *B26Unisa* tokens that are sold in exchange for Algos.
+The DAO is governed by three governors that initially coincide with the three founders of the DAO and each is given one distinct token during the opting in. The tokens are called *B26-Gov1, B26-Gov2, B26-Gov3* and can be exchanged over the blockchain and the transfer carries over the governor privilege.
 
 We have the following steps:
 
 1. The TEAL code of the DAO is compiled from the the PyTEAL code found in [dao.py](dao.py).
 At this stage, the (files containing) the addresses of the three founders are specified on the command line.
     
-2. The DAO is created by having one of the founder run [create.py](create.py).
+2. The DAO is created by having one of the founder run [createDAO.py](createDAO.py).
     
 3. The DAO is started by running [start.py](start.py) that calls the application by passing *s* (for start) as a parameter.
 and creates the assets. For example,the following is the PyTEAL code for creating the *FOSAD22Token* asset.
