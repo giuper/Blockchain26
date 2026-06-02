@@ -1,6 +1,6 @@
 import sys
 from pyteal import *
-from daoutilities import DAOtokenName, DAOGovName, DAOTokenAsset, DAOGovAsset
+from daoutilities import DAOTokenName, DAOGovName, DAOTokenUnit, DAOGovUnit
 
 cmd=ScratchVar(TealType.bytes)
 
@@ -17,8 +17,8 @@ def handle_start():
                                 TxnField.config_asset_total: Int(1_000_000),
                                 TxnField.config_asset_decimals: Int(3),
                                 TxnField.config_asset_name: Bytes(DAOTokenName),
-                                TxnField.config_asset_unit_name: Bytes(DAOTokenUnit)
-                                TxnField.config_asset_url: Bytes(DAOURL)
+                                TxnField.config_asset_unit_name: Bytes(DAOTokenUnit),
+                                TxnField.config_asset_url: Bytes(DAOURL),
                                 TxnField.config_asset_manager: Global.current_application_address(),
                                 TxnField.config_asset_reserve: Global.current_application_address(),
                                 TxnField.config_asset_freeze: Global.current_application_address(),
@@ -32,9 +32,9 @@ def handle_start():
                                 TxnField.type_enum: TxnType.AssetConfig,
                                 TxnField.config_asset_total: Int(1),
                                 TxnField.config_asset_decimals: Int(0),
-                                TxnField.config_asset_unit_name: Concat(Bytes(DAOGovName),Bytes("1"))
+                                TxnField.config_asset_unit_name: Concat(Bytes(DAOGovName),Bytes("1")),
                                 TxnField.config_asset_name: Bytes(DAOGovUnit),
-                                TxnField.config_asset_url: Bytes(DAOURL)
+                                TxnField.config_asset_url: Bytes(DAOURL),
                                 TxnField.config_asset_manager: Global.current_application_address(),
                                 TxnField.config_asset_reserve: Global.current_application_address(),
                                 TxnField.config_asset_freeze: Global.current_application_address(),
@@ -48,9 +48,9 @@ def handle_start():
                                 TxnField.type_enum: TxnType.AssetConfig,
                                 TxnField.config_asset_total: Int(1),
                                 TxnField.config_asset_decimals: Int(0),
-                                TxnField.config_asset_unit_name: Concat(Bytes(DAOGovName),Bytes("2"))
+                                TxnField.config_asset_unit_name: Concat(Bytes(DAOGovName),Bytes("2")),
                                 TxnField.config_asset_name: Bytes(DAOGovUnit),
-                                TxnField.config_asset_url: Bytes(DAOURL)
+                                TxnField.config_asset_url: Bytes(DAOURL),
                                 TxnField.config_asset_manager: Global.current_application_address(),
                                 TxnField.config_asset_reserve: Global.current_application_address(),
                                 TxnField.config_asset_freeze: Global.current_application_address(),
@@ -64,9 +64,9 @@ def handle_start():
                                 TxnField.type_enum: TxnType.AssetConfig,
                                 TxnField.config_asset_total: Int(1),
                                 TxnField.config_asset_decimals: Int(0),
-                                TxnField.config_asset_unit_name: Concat(Bytes(DAOGovName),Bytes("3"))
+                                TxnField.config_asset_unit_name: Concat(Bytes(DAOGovName),Bytes("3")),
                                 TxnField.config_asset_name: Bytes(DAOGovUnit),
-                                TxnField.config_asset_url: Bytes(DAOURL)
+                                TxnField.config_asset_url: Bytes(DAOURL),
                                 TxnField.config_asset_manager: Global.current_application_address(),
                                 TxnField.config_asset_reserve: Global.current_application_address(),
                                 TxnField.config_asset_freeze: Global.current_application_address(),
