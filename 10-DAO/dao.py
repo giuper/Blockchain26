@@ -4,39 +4,11 @@ from daoutilities import DAOTokenName, DAOGovName, DAOTokenUnit, DAOGovUnit, DAO
 
 cmd=ScratchVar(TealType.bytes)
 
-##handle_deleteapp=If(Or(Txn.sender()==Alice,Txn.sender()==Bob,Txn.sender()==Charlie)).Then(
-    ##Seq([
-        ##InnerTxnBuilder.Begin(),
-        ##InnerTxnBuilder.SetFields({
-            ##TxnField.type_enum: TxnType.AssetConfig,
-            ##TxnField.config_asset: App.globalGet(Bytes("assetIDGov"))
-         ##}),
-         ##InnerTxnBuilder.Submit(),
-##
-         ##InnerTxnBuilder.Begin(),
-         ##InnerTxnBuilder.SetFields({
-            ##TxnField.type_enum: TxnType.AssetConfig,
-            ##TxnField.config_asset: App.globalGet(Bytes("assetIDToken"))
-         ##}),
-##         InnerTxnBuilder.Submit(),
-
-         ##InnerTxnBuilder.Begin(),
-         ##InnerTxnBuilder.SetFields({
-            ##TxnField.type_enum: TxnType.Payment,
-            ##TxnField.amount: Int(0),
-            ##TxnField.receiver: Charlie,
-            ##TxnField.close_remainder_to: Charlie,
-         ##}),
-         ##InnerTxnBuilder.Submit(),
-         ##Approve()])).Else(Reject()
-##)
-##
-
 def handle_start():
     h_start=If(And(Global.group_size()==Int(2),
         Gtxn[0].type_enum()==TxnType.Payment,
         Gtxn[0].receiver()==Global.current_application_address(),
-        Gtxn[0].amount()>=Int(500_000),
+        Gtxn[0].amount()>=Int(1_000_000),
      )).Then(
         Seq([
             InnerTxnBuilder.Begin(),
@@ -162,11 +134,9 @@ def approval_program(fAddr)
     handle_noop=Seq([
         cmd.store(Txn.application_args[0]),
         Cond(
-            #[cmd.load()==Bytes("sp"),handle_price("s")],
-            #[cmd.load()==Bytes("bp"),handle_price("b")],
-            #[cmd.load()==Bytes("b"),handle_buy],
-            [cmd.load()==Bytes("s"),handle_start(fAddr)],)
-        ,Approve()])
+            [cmd.load()==Bytes("s"),handle_start(fAddr)]
+        ),
+        Approve()])
 
     handle_deleteapp=If(Txn.sender()==fAddr[2]).Then(Approve()).Else(Reject())
 
@@ -174,7 +144,7 @@ def approval_program(fAddr)
         [Txn.application_id()==Int(0), handle_creation],
         [Txn.on_completion()==OnComplete.OptIn, handle_optin],
         [Txn.on_completion()==OnComplete.CloseOut, handle_closeout],
-        #[Txn.on_completion()==OnComplete.UpdateApplication, handle_updateapp],
+        [Txn.on_completion()==OnComplete.UpdateApplication, handle_updateapp],
         [Txn.on_completion()==OnComplete.DeleteApplication, handle_deleteapp],
         [Txn.on_completion()==OnComplete.NoOp, handle_noop]
     )

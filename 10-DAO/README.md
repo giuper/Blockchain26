@@ -10,29 +10,118 @@ The DAO is governed by three governors that initially coincide with the three fo
 We have the following steps:
 
 1. The TEAL code of the DAO is compiled from the the PyTEAL code found in [dao.py](dao.py).
-At this stage, the (files containing) the addresses of the three founders are specified on the command line.
-    
-2. The DAO is created by having one of the founder run [createDAO.py](createDAO.py).
-    
-3. The DAO is started by running [start.py](start.py) that calls the application by passing *s* (for start) as a parameter.
-and creates the assets. For example,the following is the PyTEAL code for creating the *FOSAD22Token* asset.
+At this stage, the (names of the files containing) the addresses of the three founders are specified 
+on the command line. It contains a big switch that executes the relevant of the program.
+```python
+    program = Cond(
+         [Txn.application_id()==Int(0), handle_creation],
+         [Txn.on_completion()==OnComplete.OptIn, handle_optin],
+         [Txn.on_completion()==OnComplete.CloseOut, handle_closeout],
+         [Txn.on_completion()==OnComplete.UpdateApplication, handle_updateapp],
+         [Txn.on_completion()==OnComplete.DeleteApplication, handle_deleteapp],
+         [Txn.on_completion()==OnComplete.NoOp, handle_noop]
+     )
+
+     return compileTeal(program, Mode.Application, version=10)
+```
+
+2. The DAO is created by having one of the founder run [createDAO.py](createDAO.py) which constructs and submits
+an ``ApplicationCreateTxn``
+When the transaction is executed and approved, 
+the following fragment of PyTEAL is executed
 
 ```python
-     InnerTxnBuilder.Begin(),
-     InnerTxnBuilder.SetFields({
+    handle_creation=Seq([
+         App.globalPut(Bytes("bproposer"),fAddr[0]),
+         App.globalPut(Bytes("sproposer"),fAddr[0]),
+         App.globalPut(Bytes("bpprice"),Int(0)),
+         App.globalPut(Bytes("spprice"),Int(0)),
+         App.globalPut(Bytes("bcurrentPrice"),Int(900_000)),
+         App.globalPut(Bytes("scurrentPrice"),Int(1_000_000)),
+         App.globalPut(Bytes("IDToken"),Int(0)),
+         App.globalPut(Bytes("IDGov1"),Int(0)),
+         App.globalPut(Bytes("IDGov2"),Int(0)),
+         App.globalPut(Bytes("IDGov3"),Int(0)),
+         Approve()])
+
+```
+
+    
+3. The DAO is started by running [startDAO.py](startDAO.py) that calls the application 
+with a transaction created with ``ApplicationNoOpTxn`` by passing *s* (for start) as a parameter.
+The NoOP call is handled by the following switch
+```python
+     handle_noop=Seq([
+         cmd.store(Txn.application_args[0]),
+         Cond(
+             [cmd.load()==Bytes("sp"),handle_price("s")],
+             [cmd.load()==Bytes("bp"),handle_price("b")],
+             [cmd.load()==Bytes("b"),handle_buy],
+             [cmd.load()==Bytes("s"),handle_start(fAddr)]
+         ),
+         Approve()])
+```
+The start of the DAO is handled by the following PyTEAL fragments.
+
+We start by checking if there is payment transaction that transfers 1 Algo to the escrow account 
+(whose address is returned by ``Global.current_application_address()``).
+The funds are needed to pay the fees of the first transactions.
+
+```python
+    If(And(Global.group_size()==Int(2),
+         Gtxn[0].type_enum()==TxnType.Payment,
+         Gtxn[0].receiver()==Global.current_application_address(),
+         Gtxn[0].amount()>=Int(1_000_000),
+      )).Then(
+```
+If the check is passed successfully, then the dApp mints the coins and the 
+asset id is stored in the variable ``IDToken``.
+
+```python
+    InnerTxnBuilder.Begin(),
+        InnerTxnBuilder.SetFields({
+            TxnField.type_enum: TxnType.AssetConfig,
+            TxnField.config_asset_total: Int(1_000_000),
+            TxnField.config_asset_decimals: Int(3),
+            TxnField.config_asset_name: Bytes(DAOTokenName),
+            TxnField.config_asset_unit_name: Bytes(DAOTokenUnit),
+            TxnField.config_asset_url: Bytes(DAOURL),
+            TxnField.config_asset_manager: Global.current_application_address(),
+            TxnField.config_asset_reserve: Global.current_application_address(),
+            TxnField.config_asset_freeze: Global.current_application_address(),
+            TxnField.config_asset_clawback: Global.current_application_address()
+        }),
+    InnerTxnBuilder.Submit(),
+    App.globalPut(Bytes("IDToken"),InnerTxn.created_asset_id()),
+```
+The the dApp moves to create the three governor tokens, one for each founder, whose
+ids are stored in the variables ``IDGov1``, ``IDGov2``, ``IDGov3``. 
+The id of the asset created by inner transaction is obtained by invoking
+``Global.current_application_address()``
+The following fragment creates the first such token. 
+The others are created in a similar way.
+
+```python
+InnerTxnBuilder.Begin(),
+    InnerTxnBuilder.SetFields({
         TxnField.type_enum: TxnType.AssetConfig,
-        TxnField.config_asset_total: Int(1_000_000),
-        TxnField.config_asset_decimals: Int(3),
-        TxnField.config_asset_name: Bytes(DAOtokenName),
-        TxnField.config_asset_unit_name: Bytes("fsd3"),
-        TxnField.config_asset_url: Bytes("https://sites.google.com/uniurb.it/fosad/home/fosad-2022"),
+        TxnField.config_asset_total: Int(1),
+        TxnField.config_asset_decimals: Int(0),
+        TxnField.config_asset_unit_name: Concat(Bytes(DAOGovName),Bytes("1")),
+        TxnField.config_asset_name: Bytes(DAOGovUnit),
+        TxnField.config_asset_url: Bytes(DAOURL),
         TxnField.config_asset_manager: Global.current_application_address(),
         TxnField.config_asset_reserve: Global.current_application_address(),
         TxnField.config_asset_freeze: Global.current_application_address(),
         TxnField.config_asset_clawback: Global.current_application_address()
-      }),
-      TxnBuilder.Submit(),
+    }),
+    InnerTxnBuilder.Submit(),
+    App.globalPut(Bytes("IDGov1"),InnerTxn.created_asset_id()),
 ```
+
+
+
+
 
 The application call is part of group of transactions by which the DAO also receives some initial funding to be used
 to pay the fees of the transaction that will be executed.

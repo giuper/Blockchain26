@@ -1,0 +1,43 @@
+import sys, base64
+from algosdk import logic
+from algosdk.v2client import algod
+from algosdk.transaction import ApplicationNoOpTxn, PaymentTxn, calculate_group_id
+from utilities import wait_for_confirmation, getClient, getSKAddr
+import algosdk.encoding as e
+
+
+def startApp(mnemFile,index,algodClient):
+
+    params=algodClient.suggested_params()
+
+    SK,Addr=getSKAddr(mnemFile)
+    print(f'{"User address:":25s}{Addr:s}')
+
+    #transfer to fund the application
+    appAddr=get_application_address(index)
+    ptxn=PaymentTxn(Addr,params,appAddr,2_000_000)
+
+    #application call to start as indicated by argument s
+    ctxn=ApplicationNoOpTxn(sender=Addr,sp=params,index=index,app_args=["s".encode()])
+
+    gid=calculate_group_id([ptxn,ctxn])
+    ctxn.group=gid
+    ptxn.group=gid
+
+    sptxn=ptxn.sign(SK)
+    sctxn=ctxn.sign(SK)
+    txId=algodClient.send_transactions([sptxn,sctxn])
+    wait_for_confirmation(algodClient,txId,4)
+    txResponse=algodClient.pending_transaction_info(txId)
+
+
+if __name__=='__main__':
+    if len(sys.argv)!=3:
+        print("usage: python "+sys.argv[0]+" <mnem> <app index> ")
+        exit()
+
+    MnemFile=sys.argv[1]
+    index=int(sys.argv[2])
+    algodClient=algod.AlgodClient(algodToken,algodAddress)
+    startApp(MnemFile,index,algodClient)
+
