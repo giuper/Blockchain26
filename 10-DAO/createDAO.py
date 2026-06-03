@@ -13,16 +13,12 @@ def main(creatorMnemFile,approvalFile,algodClient):
     print(f'{"Creator address: ":24s}{creatorAddr:s}')
 
 
-    # declare application state storage (immutable)
-    # define global schema
-    global_ints=12
-    global_bytes=8
-    globalSchema=StateSchema(global_ints,global_bytes)
+    # global schema
+    # 8 integers and 2 strings
+    globalSchema=StateSchema(8,2)
 
-    # define local schema
-    local_ints=0
-    local_bytes=0
-    localSchema=StateSchema(local_ints,local_bytes)
+    # no user local variables
+    localSchema=StateSchema(0,0)
 
     print(f'{"Compiling clear:":24s}{"TEAL/clear.teal":s}')
     with open("TEAL/clear.teal",'r') as f:
