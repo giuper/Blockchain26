@@ -1,9 +1,8 @@
-import sys, base64
+import sys
 from algosdk import logic
 from algosdk.v2client import algod
 from algosdk.transaction import ApplicationNoOpTxn, PaymentTxn, calculate_group_id
 from utilities import wait_for_confirmation, getClient, getSKAddr
-import algosdk.encoding as e
 
 
 def startApp(mnemFile,index,algodClient):
