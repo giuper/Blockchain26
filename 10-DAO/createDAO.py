@@ -40,19 +40,19 @@ def main(creatorMnemFile,approvalFile,algodClient):
     stxn=utxn.sign(creatorSK)
 
     txId=stxn.transaction.get_txid()
-    print(f'{"Transaction id:  ":24s}{txId:s}')
+    print(f'{"Transaction id:":24s}{txId:s}')
     algodClient.send_transactions([stxn])
 
     confirmed=wait_for_confirmation(algodClient,txId,4)
     dumpFile="TX/daoCreation.stx"
-    print(f'{"Transaction information in:":32s}{dumpFile:s}')
+    print(f'{"Transaction in:":24s}{dumpFile:s}')
     with open(dumpFile,"w") as f:
         json.dump(confirmed["txn"]["txn"],f,indent=4)
 
     txResponse=algodClient.pending_transaction_info(txId)
     appId=txResponse['application-index']
-    print("App id:          ",appId);
-    print("App address:     ",logic.get_application_address(appId))
+    print(f'{"App id:":24s}{appId:d}')
+    print(f'{"App address:":24s},{logic.get_application_address(appId):d}')
 
 if __name__=='__main__':
     if len(sys.argv)!=3:

@@ -79,8 +79,7 @@ def handle_start():
 
     return h_start
 
-def approval_program(fAddr)
-
+def approval_program(fAddr):
     handle_creation=Seq([
         App.globalPut(Bytes("bproposer"),fAddr[0]),
         App.globalPut(Bytes("sproposer"),fAddr[0]),
@@ -134,11 +133,12 @@ def approval_program(fAddr)
     handle_noop=Seq([
         cmd.store(Txn.application_args[0]),
         Cond(
-            [cmd.load()==Bytes("s"),handle_start(fAddr)]
+            [cmd.load()==Bytes("s"),handle_start()]
         ),
         Approve()])
 
     handle_deleteapp=If(Txn.sender()==fAddr[2]).Then(Approve()).Else(Reject())
+    handle_updateapp=If(Txn.sender()==fAddr[0]).Then(Approve()).Else(Reject())
 
     program = Cond(
         [Txn.application_id()==Int(0), handle_creation],
@@ -157,10 +157,9 @@ if __name__=='__main__':
         exit()
 
     fAddr=[]
-    for i in range(1:4):
+    for i in range(1,4):
         with open(sys.argv[i]) as f:
-            f.addr.append(Addr(f.read()))
-        charlie=Addr(f.read())
+            fAddr.append(Addr(f.read()))
 
     program=approval_program(fAddr)
     with open("dao.teal","w") as f:

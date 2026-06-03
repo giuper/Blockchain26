@@ -2,7 +2,7 @@ import sys
 from algosdk import logic
 from algosdk.v2client import algod
 from algosdk.transaction import ApplicationNoOpTxn, PaymentTxn, calculate_group_id
-from utilities import wait_for_confirmation, getClient, getSKAddr
+from utilities import algodAddress, algodToken, wait_for_confirmation, getSKAddr
 
 
 def startApp(mnemFile,index,algodClient):
@@ -13,7 +13,7 @@ def startApp(mnemFile,index,algodClient):
     print(f'{"User address:":25s}{Addr:s}')
 
     #transfer to fund the application
-    appAddr=get_application_address(index)
+    appAddr=logic.get_application_address(index)
     ptxn=PaymentTxn(Addr,params,appAddr,2_000_000)
 
     #application call to start as indicated by argument s
