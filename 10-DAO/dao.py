@@ -31,7 +31,7 @@ cmd=ScratchVar(TealType.bytes)
          ##Approve()])).Else(Reject()
 ##)
 ##
-	
+
 def handle_start():
     h_start=If(And(Global.group_size()==Int(2),
         Gtxn[0].type_enum()==TxnType.Payment,
@@ -107,11 +107,11 @@ def handle_start():
 
     return h_start
 
-def approval_program(Alice,Bob,Charlie):
+def approval_program(fAddr)
 
     handle_creation=Seq([
-        App.globalPut(Bytes("bproposer"),Alice),
-        App.globalPut(Bytes("sproposer"),Alice),
+        App.globalPut(Bytes("bproposer"),fAddr[0]),
+        App.globalPut(Bytes("sproposer"),fAddr[0]),
         App.globalPut(Bytes("bpprice"),Int(0)),
         App.globalPut(Bytes("spprice"),Int(0)),
         App.globalPut(Bytes("bcurrentPrice"),Int(900_000)),
@@ -123,7 +123,18 @@ def approval_program(Alice,Bob,Charlie):
         Approve()])
 
     handle_optin=Cond(
-        [Txn.sender()==Alice,Seq([
+        [Txn.sender()==fAddr[0],Seq([
+            InnerTxnBuilder.Begin(),
+            InnerTxnBuilder.SetFields({
+                TxnField.type_enum: TxnType.AssetTransfer,
+                TxnField.asset_receiver: Txn.sender(),
+                TxnField.asset_amount: Int(1),
+                TxnField.xfer_asset: App.globalGet(Bytes("IDGov0"))
+             }),
+             InnerTxnBuilder.Submit(),
+             Approve()])],
+
+        [Txn.sender()==fAddr[1],Seq([
             InnerTxnBuilder.Begin(),
             InnerTxnBuilder.SetFields({
                 TxnField.type_enum: TxnType.AssetTransfer,
@@ -133,23 +144,14 @@ def approval_program(Alice,Bob,Charlie):
              }),
              InnerTxnBuilder.Submit(),
              Approve()])],
-        [Txn.sender()==Bob,Seq([
+
+        [Txn.sender()==fAddr[2],Seq([
             InnerTxnBuilder.Begin(),
             InnerTxnBuilder.SetFields({
                 TxnField.type_enum: TxnType.AssetTransfer,
                 TxnField.asset_receiver: Txn.sender(),
                 TxnField.asset_amount: Int(1),
                 TxnField.xfer_asset: App.globalGet(Bytes("IDGov2"))
-             }),
-             InnerTxnBuilder.Submit(),
-             Approve()])],
-        [Txn.sender()==Charlie,Seq([
-            InnerTxnBuilder.Begin(),
-            InnerTxnBuilder.SetFields({
-                TxnField.type_enum: TxnType.AssetTransfer,
-                TxnField.asset_receiver: Txn.sender(),
-                TxnField.asset_amount: Int(1),
-                TxnField.xfer_asset: App.globalGet(Bytes("IDGov3"))
              }),
              InnerTxnBuilder.Submit(),
              Approve()])],
@@ -163,10 +165,10 @@ def approval_program(Alice,Bob,Charlie):
             #[cmd.load()==Bytes("sp"),handle_price("s")],
             #[cmd.load()==Bytes("bp"),handle_price("b")],
             #[cmd.load()==Bytes("b"),handle_buy],
-            [cmd.load()==Bytes("s"),handle_start()],)
+            [cmd.load()==Bytes("s"),handle_start(fAddr)],)
         ,Approve()])
 
-    handle_deleteapp=If(Txn.sender()==Charlie).Then(Approve()).Else(Reject())
+    handle_deleteapp=If(Txn.sender()==fAddr[2]).Then(Approve()).Else(Reject())
 
     program = Cond(
         [Txn.application_id()==Int(0), handle_creation],
@@ -181,16 +183,15 @@ def approval_program(Alice,Bob,Charlie):
 
 if __name__=='__main__':
     if len(sys.argv)!=4:
-        print("Usage: python",sys.argv[0],"<Alice ADDR file> <Bob ADDR file> <Charlie ADDR file>")
+        print("Usage: python",sys.argv[0],"<F1 ADDR file> <F2 ADDR file> <F3 ADDR file>")
         exit()
 
-    with open(sys.argv[1]) as f:
-        alice=Addr(f.read())
-    with open(sys.argv[2]) as f:
-        bob=Addr(f.read())
-    with open(sys.argv[3]) as f:
+    fAddr=[]
+    for i in range(1:4):
+        with open(sys.argv[i]) as f:
+            f.addr.append(Addr(f.read()))
         charlie=Addr(f.read())
 
-    program=approval_program(alice,bob,charlie)
+    program=approval_program(fAddr)
     with open("dao.teal","w") as f:
         f.write(program)
