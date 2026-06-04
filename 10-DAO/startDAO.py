@@ -5,7 +5,7 @@ from algosdk.transaction import ApplicationNoOpTxn, PaymentTxn, calculate_group_
 from utilities import algodAddress, algodToken, wait_for_confirmation, getSKAddr
 
 
-def startApp(mnemFile,index,algodClient):
+def startApp(mnemFile,appIndex,algodClient):
 
     params=algodClient.suggested_params()
 
@@ -13,11 +13,11 @@ def startApp(mnemFile,index,algodClient):
     print(f'{"User address:":25s}{Addr:s}')
 
     #transfer to fund the application
-    appAddr=logic.get_application_address(index)
+    appAddr=logic.get_application_address(appIndex)
     ptxn=PaymentTxn(Addr,params,appAddr,2_000_000)
 
     #application call to start as indicated by argument s
-    ctxn=ApplicationNoOpTxn(sender=Addr,sp=params,index=index,app_args=["s".encode()])
+    ctxn=ApplicationNoOpTxn(sender=Addr,sp=params,index=appIndex,app_args=["s".encode()],)
 
     gid=calculate_group_id([ptxn,ctxn])
     ctxn.group=gid

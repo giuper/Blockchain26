@@ -50,7 +50,7 @@ def main():
         print("usage: "+sys.argv[0]+" <file with sender key> <file with receiver addr>")
         exit()
 
-    amount=1_000_000
+    amount=20_000_000
 
     algodClient = algod.AlgodClient(algodToken,algodAddress)
 

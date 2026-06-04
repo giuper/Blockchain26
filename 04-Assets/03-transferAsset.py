@@ -18,7 +18,7 @@ def transfer(senderMNEMFile,receiverADDRFile,assetID,algodClient):
     print(f'{"Receiver Addr:":28s}{receiverAddr:s}')
     
     txn=AssetTransferTxn(sender=senderAddr,sp=params,
-                receiver=receiverAddr,amt=4,index=assetID)
+                receiver=receiverAddr,amt=2,index=assetID)
     write_to_file([txn],TXFolder+"03-assetTrans.utxn")
     
     stxn=txn.sign(senderSK)

@@ -1,4 +1,3 @@
-#!/usr/bin/python3.10
 import base64
 import sys
 from Cryptodome.Hash import SHA512

@@ -34,8 +34,24 @@ def approval_program(fAddr):
                 TxnField.type_enum: TxnType.AssetConfig,
                 TxnField.config_asset_total: Int(1),
                 TxnField.config_asset_decimals: Int(0),
-                TxnField.config_asset_unit_name: Concat(Bytes(DAOGovName),Bytes("1")),
-                TxnField.config_asset_name: Bytes(DAOGovUnit),
+                TxnField.config_asset_unit_name: Bytes(DAOGovUnit),
+                TxnField.config_asset_name: Concat(Bytes(DAOGovName),Bytes("0")),
+                TxnField.config_asset_url: Bytes(DAOURL),
+                TxnField.config_asset_manager: Global.current_application_address(),
+                TxnField.config_asset_reserve: Global.current_application_address(),
+                TxnField.config_asset_freeze: Global.current_application_address(),
+                TxnField.config_asset_clawback: Global.current_application_address()
+             }),
+             InnerTxnBuilder.Submit(),
+             App.globalPut(Bytes("IDGov0"),InnerTxn.created_asset_id()),
+
+             InnerTxnBuilder.Begin(),
+             InnerTxnBuilder.SetFields({
+                TxnField.type_enum: TxnType.AssetConfig,
+                TxnField.config_asset_total: Int(1),
+                TxnField.config_asset_decimals: Int(0),
+                TxnField.config_asset_unit_name: Bytes(DAOGovUnit),
+                TxnField.config_asset_name: Concat(Bytes(DAOGovName),Bytes("1")),
                 TxnField.config_asset_url: Bytes(DAOURL),
                 TxnField.config_asset_manager: Global.current_application_address(),
                 TxnField.config_asset_reserve: Global.current_application_address(),
@@ -50,8 +66,8 @@ def approval_program(fAddr):
                 TxnField.type_enum: TxnType.AssetConfig,
                 TxnField.config_asset_total: Int(1),
                 TxnField.config_asset_decimals: Int(0),
-                TxnField.config_asset_unit_name: Concat(Bytes(DAOGovName),Bytes("2")),
-                TxnField.config_asset_name: Bytes(DAOGovUnit),
+                TxnField.config_asset_unit_name: Bytes(DAOGovUnit),
+                TxnField.config_asset_name: Concat(Bytes(DAOGovName),Bytes("1")),
                 TxnField.config_asset_url: Bytes(DAOURL),
                 TxnField.config_asset_manager: Global.current_application_address(),
                 TxnField.config_asset_reserve: Global.current_application_address(),
@@ -60,22 +76,6 @@ def approval_program(fAddr):
              }),
              InnerTxnBuilder.Submit(),
              App.globalPut(Bytes("IDGov2"),InnerTxn.created_asset_id()),
-
-             InnerTxnBuilder.Begin(),
-             InnerTxnBuilder.SetFields({
-                TxnField.type_enum: TxnType.AssetConfig,
-                TxnField.config_asset_total: Int(1),
-                TxnField.config_asset_decimals: Int(0),
-                TxnField.config_asset_unit_name: Concat(Bytes(DAOGovName),Bytes("3")),
-                TxnField.config_asset_name: Bytes(DAOGovUnit),
-                TxnField.config_asset_url: Bytes(DAOURL),
-                TxnField.config_asset_manager: Global.current_application_address(),
-                TxnField.config_asset_reserve: Global.current_application_address(),
-                TxnField.config_asset_freeze: Global.current_application_address(),
-                TxnField.config_asset_clawback: Global.current_application_address()
-             }),
-             InnerTxnBuilder.Submit(),
-             App.globalPut(Bytes("IDGov3"),InnerTxn.created_asset_id()),
 
              Approve()])).Else(Reject())
 
@@ -87,9 +87,9 @@ def approval_program(fAddr):
         App.globalPut(Bytes("bcurrentPrice"),Int(900_000)),
         App.globalPut(Bytes("scurrentPrice"),Int(1_000_000)),
         App.globalPut(Bytes("IDToken"),Int(0)),
+        App.globalPut(Bytes("IDGov0"),Int(0)),
         App.globalPut(Bytes("IDGov1"),Int(0)),
         App.globalPut(Bytes("IDGov2"),Int(0)),
-        App.globalPut(Bytes("IDGov3"),Int(0)),
         Approve()])
 
     handle_optin=Seq([
@@ -162,7 +162,49 @@ def approval_program(fAddr):
 
 
     handle_closeout=Seq([Approve()])
-    handle_deleteapp=If(Txn.sender()==fAddr[2]).Then(Approve()).Else(Reject())
+    handle_deleteapp=If(Txn.sender()==fAddr[2]).Then(
+	Seq(
+            InnerTxnBuilder.Begin(),
+            InnerTxnBuilder.SetFields({
+		TxnField.type_enum: TxnType.AssetConfig,
+		TxnField.config_asset: App.globalGet(Bytes("IDToken")),
+            }),
+            InnerTxnBuilder.Submit(),
+
+            InnerTxnBuilder.Begin(),
+            InnerTxnBuilder.SetFields({
+		TxnField.type_enum: TxnType.AssetConfig,
+		TxnField.config_asset: App.globalGet(Bytes("IDGov0")),
+            }),
+            InnerTxnBuilder.Submit(),
+
+            InnerTxnBuilder.Begin(),
+            InnerTxnBuilder.SetFields({
+		TxnField.type_enum: TxnType.AssetConfig,
+		TxnField.config_asset: App.globalGet(Bytes("IDGov1")),
+            }),
+            InnerTxnBuilder.Submit(),
+
+            InnerTxnBuilder.Begin(),
+            InnerTxnBuilder.SetFields({
+		TxnField.type_enum: TxnType.AssetConfig,
+		TxnField.config_asset: App.globalGet(Bytes("IDGov2")),
+            }),
+            InnerTxnBuilder.Submit(),
+
+            InnerTxnBuilder.Begin(),
+            InnerTxnBuilder.SetFields({
+                TxnField.type_enum: TxnType.Payment,
+                TxnField.amount: Int(0),
+                TxnField.receiver: Txn.sender(),
+		TxnField.close_remainder_to: Txn.sender()
+            }),
+            InnerTxnBuilder.Submit(),
+
+	    Approve()
+	)
+    ).Else(Reject())
+
     handle_updateapp=If(Txn.sender()==fAddr[0]).Then(Approve()).Else(Reject())
 
     program = Cond(

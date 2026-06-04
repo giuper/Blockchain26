@@ -3,6 +3,18 @@ from algosdk import logic
 from algosdk.v2client import algod
 from algosdk.transaction import ApplicationNoOpTxn, PaymentTxn, calculate_group_id
 from utilities import algodAddress, algodToken, wait_for_confirmation, getSKAddr
+from daoutilities import DAOTokenName
+
+def getIndexAsset(creatorAddr,assetName,algodClient):
+
+    accountInfo=algodClient.account_info(creatorAddr)
+    noca=len(accountInfo['created-assets'])
+    if noca==0:
+        return None
+    for asset in accountInfo['created-assets']:
+        if (asset['params']['name']==assetName):
+            return asset['index']
+    return None
 
 
 def buyCoin(mnemFile,indexApp,nc,price,algodClient):
@@ -14,11 +26,15 @@ def buyCoin(mnemFile,indexApp,nc,price,algodClient):
 
     #transfer to fund the application
     appAddr=logic.get_application_address(indexApp)
+
+    assetIndex=getIndexAsset(appAddr,DAOTokenName,algodClient)
+    print(f'{"Asset index:":25s}{assetIndex:d}')
+
     ptxn=PaymentTxn(Addr,params,appAddr,nc*price)
 
     #application call to by as indicated by the parameter b
     appArgs=["b".encode(),nc.to_bytes(8,'big')]
-    ctxn=ApplicationNoOpTxn(sender=Addr,sp=params,index=indexApp,app_args=appArgs)
+    ctxn=ApplicationNoOpTxn(sender=Addr,sp=params,index=indexApp,app_args=appArgs,foreign_assets=[assetIndex])
 
     gid=calculate_group_id([ptxn,ctxn])
     ctxn.group=gid
