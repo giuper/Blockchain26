@@ -49,7 +49,7 @@ def buyCoin(mnemFile,indexApp,nc,price,algodClient):
 
 if __name__=='__main__':
     if len(sys.argv)!=5:
-        print("usage: python "+sys.argv[0]+" <mnem> <app index> <number of coin> <price>")
+        print("usage: python "+sys.argv[0]+" <mnem> <app index> <number of coin> <price in microAlgo>")
         exit()
 
     MnemFile=sys.argv[1]

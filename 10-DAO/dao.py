@@ -128,7 +128,10 @@ def approval_program(fAddr):
              ])],
     	),Approve()])
 
-    handle_optin=Seq([Approve()])
+    handle_optin=Seq([
+	Approve()
+    ])
+
     handle_buy=Seq([
         amt.store(Btoi(Txn.application_args[1])),
         If(And(
