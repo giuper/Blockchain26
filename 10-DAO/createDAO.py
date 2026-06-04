@@ -4,6 +4,7 @@ from algosdk.v2client import algod
 from algosdk.transaction import ApplicationCreateTxn, OnComplete, StateSchema
 from utilities import algodAddress, algodToken, wait_for_confirmation, getSKAddr
 
+
 def main(creatorMnemFile,approvalFile,algodClient):
 
     params=algodClient.suggested_params()
@@ -52,7 +53,7 @@ def main(creatorMnemFile,approvalFile,algodClient):
     txResponse=algodClient.pending_transaction_info(txId)
     appId=txResponse['application-index']
     print(f'{"App id:":24s}{appId:d}')
-    print(f'{"App address:":24s},{logic.get_application_address(appId):d}')
+    print(f'{"App address:":24s},{logic.get_application_address(appId):s}')
 
 if __name__=='__main__':
     if len(sys.argv)!=3:
@@ -63,3 +64,4 @@ if __name__=='__main__':
     approvalFile=sys.argv[2]
     algodClient=algod.AlgodClient(algodToken,algodAddress)
     main(creatorMnemFile,approvalFile,algodClient)
+
