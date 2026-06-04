@@ -128,8 +128,9 @@ def approval_program(fAddr):
              ])],
     	),Approve()])
 
+    handle_optin=Seq([Approve()])
     handle_buy=Seq([
-        amt.store(Btoi(Gtxn[1].application_args[1])),
+        amt.store(Btoi(Txn.application_args[1])),
         If(And(
             Global.group_size()==Int(2),
             Gtxn[0].type_enum()==TxnType.Payment,
@@ -139,7 +140,7 @@ def approval_program(fAddr):
             InnerTxnBuilder.Begin(),
             InnerTxnBuilder.SetFields({
                 TxnField.type_enum: TxnType.AssetTransfer,
-                TxnField.asset_receiver: Gtxn[1].sender(),
+                TxnField.asset_receiver: Txn.sender(),
                 TxnField.asset_amount: amt.load(),
                 TxnField.xfer_asset: App.globalGet(Bytes("IDToken"))
              }),
@@ -151,7 +152,7 @@ def approval_program(fAddr):
 
     handle_noop=If(Global.group_size()==Int(2)).Then(
         Seq([
-            cmd.store(Gtxn[1].application_args[0]),
+            cmd.store(Txn.application_args[0]),
             Cond(
                 [cmd.load()==Bytes("s"),handle_start],
                 [cmd.load()==Bytes("b"),handle_buy]
