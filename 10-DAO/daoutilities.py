@@ -36,7 +36,7 @@ def getGlobalVar(appIndex,varName,algodClient):
 def getSellingPrice(appIndex,algodClient):
    return getGlobalVar(appIndex,"scurrentPrice",algodClient)
 
-#returns the list of all opeted-in apps 
+#returns the list of all opeted-in apps
 def getAllApps(Addr,algodClient):
     accountInfo=algodClient.account_info(Addr)
     return [app['id'] for app in accountInfo["apps-local-state"]]
@@ -62,13 +62,13 @@ def getAssetCreator(index,algodClient):
     except Exception as err:
         return None
     return assetInfo['params']['creator']
-    
+
 def getAmountAssetFromAddrIndex(Addr,index,algodClient):
     accountInfo=algodClient.account_info(Addr)
     for asset in accountInfo['assets']:
         if asset['asset-id']==index:
             return asset['amount']
-        
+
 def getAssetFromAddr(Addr,algodClient):
     accountInfo=algodClient.account_info(Addr)
     print(accountInfo['assets'][0].keys())

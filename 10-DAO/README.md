@@ -82,7 +82,7 @@ asset id is stored in the variable ``IDToken``.
         InnerTxnBuilder.SetFields({
             TxnField.type_enum: TxnType.AssetConfig,
             TxnField.config_asset_total: Int(1_000_000),
-            TxnField.config_asset_decimals: Int(3),
+            TxnField.config_asset_decimals: Int(0),
             TxnField.config_asset_name: Bytes(DAOTokenName),
             TxnField.config_asset_unit_name: Bytes(DAOTokenUnit),
             TxnField.config_asset_url: Bytes(DAOURL),
