@@ -3,9 +3,11 @@ from pyteal import *
 from daoutilities import DAOTokenName, DAOGovName, DAOTokenUnit, DAOGovUnit, DAOURL
 
 cmd=ScratchVar(TealType.bytes)
+amt=ScratchVar(TealType.uint64)
 
-def handle_start():
-    h_start=If(And(Global.group_size()==Int(2),
+def approval_program(fAddr):
+
+    handle_start=If(And(Global.group_size()==Int(2),
         Gtxn[0].type_enum()==TxnType.Payment,
         Gtxn[0].receiver()==Global.current_application_address(),
         Gtxn[0].amount()>=Int(1_000_000),
@@ -15,7 +17,7 @@ def handle_start():
             InnerTxnBuilder.SetFields({
                 TxnField.type_enum: TxnType.AssetConfig,
                 TxnField.config_asset_total: Int(1_000_000),
-                TxnField.config_asset_decimals: Int(3),
+                TxnField.config_asset_decimals: Int(0),
                 TxnField.config_asset_name: Bytes(DAOTokenName),
                 TxnField.config_asset_unit_name: Bytes(DAOTokenUnit),
                 TxnField.config_asset_url: Bytes(DAOURL),
@@ -77,9 +79,6 @@ def handle_start():
 
              Approve()])).Else(Reject())
 
-    return h_start
-
-def approval_program(fAddr):
     handle_creation=Seq([
         App.globalPut(Bytes("bproposer"),fAddr[0]),
         App.globalPut(Bytes("sproposer"),fAddr[0]),
@@ -93,7 +92,8 @@ def approval_program(fAddr):
         App.globalPut(Bytes("IDGov3"),Int(0)),
         Approve()])
 
-    handle_optin=Cond(
+    handle_optin=Seq([
+            Cond(
         [Txn.sender()==fAddr[0],Seq([
             InnerTxnBuilder.Begin(),
             InnerTxnBuilder.SetFields({
@@ -103,7 +103,7 @@ def approval_program(fAddr):
                 TxnField.xfer_asset: App.globalGet(Bytes("IDGov0"))
              }),
              InnerTxnBuilder.Submit(),
-             Approve()])],
+             ])],
 
         [Txn.sender()==fAddr[1],Seq([
             InnerTxnBuilder.Begin(),
@@ -114,7 +114,7 @@ def approval_program(fAddr):
                 TxnField.xfer_asset: App.globalGet(Bytes("IDGov1"))
              }),
              InnerTxnBuilder.Submit(),
-             Approve()])],
+             ])],
 
         [Txn.sender()==fAddr[2],Seq([
             InnerTxnBuilder.Begin(),
@@ -125,18 +125,42 @@ def approval_program(fAddr):
                 TxnField.xfer_asset: App.globalGet(Bytes("IDGov2"))
              }),
              InnerTxnBuilder.Submit(),
-             Approve()])],
-    	)
+             ])],
+    	),Approve()])
+
+    handle_buy=Seq([
+        amt.store(Btoi(Gtxn[1].application_args[1])),
+        If(And(
+            Global.group_size()==Int(2),
+            Gtxn[0].type_enum()==TxnType.Payment,
+            Gtxn[0].receiver()==Global.current_application_address(),
+            Gtxn[0].amount()>=Mul(amt.load(),App.globalGet(Bytes("scurrentPrice")))
+        )).Then(
+            InnerTxnBuilder.Begin(),
+            InnerTxnBuilder.SetFields({
+                TxnField.type_enum: TxnType.AssetTransfer,
+                TxnField.asset_receiver: Gtxn[1].sender(),
+                TxnField.asset_amount: amt.load(),
+                TxnField.xfer_asset: App.globalGet(Bytes("IDToken"))
+             }),
+             InnerTxnBuilder.Submit(),
+             Approve()
+        ).Else(Reject())
+        ])
+
+
+    handle_noop=If(Global.group_size()==Int(2)).Then(
+        Seq([
+            cmd.store(Gtxn[1].application_args[0]),
+            Cond(
+                [cmd.load()==Bytes("s"),handle_start],
+                [cmd.load()==Bytes("b"),handle_buy]
+            ),
+            Approve()
+        ])).Else(Reject())
+
 
     handle_closeout=Seq([Approve()])
-
-    handle_noop=Seq([
-        cmd.store(Txn.application_args[0]),
-        Cond(
-            [cmd.load()==Bytes("s"),handle_start()]
-        ),
-        Approve()])
-
     handle_deleteapp=If(Txn.sender()==fAddr[2]).Then(Approve()).Else(Reject())
     handle_updateapp=If(Txn.sender()==fAddr[0]).Then(Approve()).Else(Reject())
 
@@ -153,7 +177,7 @@ def approval_program(fAddr):
 
 if __name__=='__main__':
     if len(sys.argv)!=4:
-        print("Usage: python",sys.argv[0],"<F1 ADDR file> <F2 ADDR file> <F3 ADDR file>")
+        print("Usage: python",sys.argv[0],"<F0 ADDR file> <F1 ADDR file> <F2 ADDR file>")
         exit()
 
     fAddr=[]
