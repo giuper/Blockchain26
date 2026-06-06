@@ -39,9 +39,9 @@ the following fragment of PyTEAL is executed
          App.globalPut(Bytes("bcurrentPrice"),Int(900_000)),
          App.globalPut(Bytes("scurrentPrice"),Int(1_000_000)),
          App.globalPut(Bytes("IDToken"),Int(0)),
+         App.globalPut(Bytes("IDGov0"),Int(0)),
          App.globalPut(Bytes("IDGov1"),Int(0)),
          App.globalPut(Bytes("IDGov2"),Int(0)),
-         App.globalPut(Bytes("IDGov3"),Int(0)),
          Approve()])
 
 ```
