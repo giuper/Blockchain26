@@ -46,8 +46,13 @@ the following fragment of PyTEAL is executed
 
 ```
 This fragments creates the variables that will be used by the DAO.
-         IDToken, IDGov0, IDGov1, IDGov2 will hold the indices of the
+         ``bcurrentPrice`` holds the price at which the DAO will by the token and 
+         ``scurrentPrice`` holds the selluing price  for the token.
+         ``IDToken, IDGov0, IDGov1,`` and ``IDGov2`` hold the indices of the
 4 assets the DAO will deal with: the actual coin and the three governors coins.
+The coins will be created during start-up and thus the variable contain the integer 0.
+
+The role of the other variables will become clear as we continue the description.
 
 
     
