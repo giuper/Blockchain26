@@ -67,7 +67,7 @@ def approval_program(fAddr):
                 TxnField.config_asset_total: Int(1),
                 TxnField.config_asset_decimals: Int(0),
                 TxnField.config_asset_unit_name: Bytes(DAOGovUnit),
-                TxnField.config_asset_name: Concat(Bytes(DAOGovName),Bytes("1")),
+                TxnField.config_asset_name: Concat(Bytes(DAOGovName),Bytes("2")),
                 TxnField.config_asset_url: Bytes(DAOURL),
                 TxnField.config_asset_manager: Global.current_application_address(),
                 TxnField.config_asset_reserve: Global.current_application_address(),
