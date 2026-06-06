@@ -50,10 +50,9 @@ This fragments creates the variables that will be used by the DAO.
          ``scurrentPrice`` holds the selluing price  for the token.
          ``IDToken, IDGov0, IDGov1,`` and ``IDGov2`` hold the indices of the
 4 assets the DAO will deal with: the actual coin and the three governors coins.
-The coins will be created during start-up and thus the variable contain the integer 0.
+The coins will be created during start-up and the variables are initialized to 0.
 
 The role of the other variables will become clear as we continue the description.
-
 
     
 3. The DAO is started by running [startDAO.py](startDAO.py) that calls the application 
