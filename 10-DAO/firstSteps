@@ -1,0 +1,19 @@
+#!/usr/bin/bash
+
+apython='/home/giuper/algoenv/bin/python3'
+FA0='./Accounts/0.addr'
+FA1='./Accounts/1.addr'
+FA2='./Accounts/2.addr'
+FA2M='./Accounts/2.mnem'
+
+echo "Compiling PyTeal into Teal"
+${apython} dao.py ${FA0} ${FA1} ${FA2}
+state=$?
+
+if [ $state -eq 0 ]; then
+	echo "Creating the DAO"
+	${apython} createDAO.py ${FA2M} dao.teal
+else
+	echo "Error in compilation"
+fi
+	
