@@ -62,10 +62,8 @@ The NoOP call is handled by the following switch
      handle_noop=Seq([
          cmd.store(Txn.application_args[0]),
          Cond(
-             [cmd.load()==Bytes("sp"),handle_price("s")],
-             [cmd.load()==Bytes("bp"),handle_price("b")],
+             [cmd.load()==Bytes("s"),handle_start]
              [cmd.load()==Bytes("b"),handle_buy],
-             [cmd.load()==Bytes("s"),handle_start(fAddr)]
          ),
          Approve()])
 ```
