@@ -45,6 +45,10 @@ the following fragment of PyTEAL is executed
          Approve()])
 
 ```
+This fragments creates the variables that will be used by the DAO.
+         IDToken, IDGov0, IDGov1, IDGov2 will hold the indices of the
+4 assets the DAO will deal with: the actual coin and the three governors coins.
+
 
     
 3. The DAO is started by running [startDAO.py](startDAO.py) that calls the application 
