@@ -5,7 +5,7 @@
 
 This contains a simple implementation of a DAO.
 The DAO mints and owns a certain number of *B26Unisa* tokens that are sold in exchange for Algos.
-The DAO is governed by three governors that initially coincide with the three founders of the DAO and each is given one distinct token during the opting in. The tokens are called *B26-Gov1, B26-Gov2, B26-Gov3* and can be exchanged over the blockchain and the transfer carries over the governor privilege.
+The DAO is governed by three governors that initially coincide with the three founders of the DAO and each is given one distinct token during the opting in. The tokens are called *B26-Gov0, B26-Gov1, B26-Gov2* and can be exchanged over the blockchain and the transfer carries over the governor privilege.
 
 We have the following steps:
 
