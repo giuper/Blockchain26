@@ -92,43 +92,7 @@ def approval_program(fAddr):
         App.globalPut(Bytes("IDGov2"),Int(0)),
         Approve()])
 
-    handle_optin=Seq([
-            Cond(
-        [Txn.sender()==fAddr[0],Seq([
-            InnerTxnBuilder.Begin(),
-            InnerTxnBuilder.SetFields({
-                TxnField.type_enum: TxnType.AssetTransfer,
-                TxnField.asset_receiver: Txn.sender(),
-                TxnField.asset_amount: Int(1),
-                TxnField.xfer_asset: App.globalGet(Bytes("IDGov0"))
-             }),
-             InnerTxnBuilder.Submit(),
-             ])],
-
-        [Txn.sender()==fAddr[1],Seq([
-            InnerTxnBuilder.Begin(),
-            InnerTxnBuilder.SetFields({
-                TxnField.type_enum: TxnType.AssetTransfer,
-                TxnField.asset_receiver: Txn.sender(),
-                TxnField.asset_amount: Int(1),
-                TxnField.xfer_asset: App.globalGet(Bytes("IDGov1"))
-             }),
-             InnerTxnBuilder.Submit(),
-             ])],
-
-        [Txn.sender()==fAddr[2],Seq([
-            InnerTxnBuilder.Begin(),
-            InnerTxnBuilder.SetFields({
-                TxnField.type_enum: TxnType.AssetTransfer,
-                TxnField.asset_receiver: Txn.sender(),
-                TxnField.asset_amount: Int(1),
-                TxnField.xfer_asset: App.globalGet(Bytes("IDGov2"))
-             }),
-             InnerTxnBuilder.Submit(),
-             ])],
-    	),Approve()])
-
-    handle_optin=If(Txn.sender()==fAddr[2]
+    handle_fs=If(Txn.sender()==fAddr[2]
         ).Then(Seq([
             InnerTxnBuilder.Begin(),
             InnerTxnBuilder.SetFields({
@@ -142,6 +106,7 @@ def approval_program(fAddr):
     	     ])).Else(Approve())
 
     handle_optin=Approve()
+
     handle_buy=Seq([
         amt.store(Btoi(Txn.application_args[1])),
         If(And(
@@ -168,7 +133,8 @@ def approval_program(fAddr):
             cmd.store(Txn.application_args[0]),
             Cond(
                 [cmd.load()==Bytes("s"),handle_start],
-                [cmd.load()==Bytes("b"),handle_buy]
+                [cmd.load()==Bytes("b"),handle_buy],
+                [cmd.load()==Bytes("f"),handle_fs]
             ),
             Approve()
         ])).Else(Reject())
