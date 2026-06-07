@@ -10,7 +10,6 @@ def startApp(mnemFile,appIndex,algodClient):
     params=algodClient.suggested_params()
 
     SK,Addr=getSKAddr(mnemFile)
-    print(f'{"User address:":25s}{Addr:s}')
 
     #transfer to fund the application
     appAddr=logic.get_application_address(appIndex)
@@ -28,6 +27,8 @@ def startApp(mnemFile,appIndex,algodClient):
     txId=algodClient.send_transactions([sptxn,sctxn])
     wait_for_confirmation(algodClient,txId,4)
     txResponse=algodClient.pending_transaction_info(txId)
+    print(f'{"User address:":24s}{Addr:s}')
+    print(f'{"Starting DAO:":24s}{appIndex:d}')
 
 
 if __name__=='__main__':

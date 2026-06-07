@@ -5,15 +5,29 @@ FA0='./Accounts/0.addr'
 FA1='./Accounts/1.addr'
 FA2='./Accounts/2.addr'
 FA2M='./Accounts/2.mnem'
+UA='./Accounts/user.addr'
+UM='./Accounts/user.mnem'
 
-echo "Compiling PyTeal into Teal"
+echo -e "\e[31mCompiling PyTeal into Teal\e[0m"
 ${apython} dao.py ${FA0} ${FA1} ${FA2}
 state=$?
 
 if [ $state -eq 0 ]; then
-	echo "Creating the DAO"
-	${apython} createDAO.py ${FA2M} dao.teal
+	echo -e "\e[31mCreating the DAO\e[0m"
+	appid=$(${apython} createDAO.py ${FA2M} dao.teal | awk '/App id:/ {print $3}')
 else
-	echo "Error in compilation"
+	echo -e "\e[31mError in compilation\e[0m"
+	exit
 fi
 	
+echo -e "\e[31mApp id: ${appid}\e[0m"
+echo -e "\e[31mCreated by user" `cat ${FA2}` "\e[0m"
+echo -e "\e[31mStarting the DAO\e[0m"
+${apython} startDAO.py ${FA2M}  ${appid}
+
+echo -e "\e[31mUser" `cat ${UA}` "opting in\e[0m"
+${apython} userOpt.py ${UM} $appid
+
+
+${apython} deleteDAO.py ${FA2M} ${appid}
+echo -e "\e[31mDestroyed by user" `cat ${FA2}` "\e[0m"

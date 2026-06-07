@@ -1,7 +1,7 @@
 import sys, json
 from algosdk import logic
 from algosdk.v2client import algod
-from algosdk.transaction import ApplicationOptInTxn
+from algosdk.transaction import ApplicationOptInTxn, AssetTransferTxn, calculate_group_id
 from utilities import algodAddress, algodToken, wait_for_confirmation, getSKAddr
 from daoutilities import DAOTokenName
 
@@ -30,7 +30,7 @@ def main(MnemFile,appIndex,algodClient):
     print(f'{"Asset index:":24s}{assetIndex:d}')
 
     utx0=ApplicationOptInTxn(sender=Addr,sp=params,index=appIndex,foreign_assets=[assetIndex])
-    utx1=AssetTransferTxn(sender=Addr,sp=parames,receiver=Addr,amt=0,index=assetIndex)
+    utx1=AssetTransferTxn(sender=Addr,sp=params,receiver=Addr,amt=0,index=assetIndex)
     gid=calculate_group_id([utx0,utx1])
     
     utx0.group=gid
@@ -38,10 +38,10 @@ def main(MnemFile,appIndex,algodClient):
 
     stx0=utx0.sign(SK)
     stx1=utx1.sign(SK)
+    Txns=[stx0,stx1]
 
-    txId=stx.transaction.get_txid()
+    txId=algodClient.send_transactions([stx0,stx1])
     print(f'{"Transaction id:":24s}{txId:s}')
-    algodClient.send_transactions([stx0,stx1])
 
     confirmed=wait_for_confirmation(algodClient,txId,4)
     dumpFile='TX/userOpt.stx'
