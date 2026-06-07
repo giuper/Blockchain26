@@ -3,18 +3,7 @@ from algosdk import logic
 from algosdk.v2client import algod
 from algosdk.transaction import ApplicationOptInTxn, AssetTransferTxn, calculate_group_id
 from utilities import algodAddress, algodToken, wait_for_confirmation, getSKAddr
-from daoutilities import DAOTokenName
-
-def getIndexAsset(creatorAddr,assetName,algodClient):
-
-    accountInfo=algodClient.account_info(creatorAddr)
-    noca=len(accountInfo['created-assets'])
-    if noca==0:
-        return None
-    for asset in accountInfo['created-assets']:
-        if (asset['params']['name']==assetName):
-            return asset['index']
-    return None
+from daoutilities import DAOTokenName, DAOGovName, getIndexAssets
 
 def main(MnemFile,appIndex,algodClient):
 
@@ -25,22 +14,24 @@ def main(MnemFile,appIndex,algodClient):
     print(f'{"OptIn to: ":24s}{index:d}')  
 
     appAddr=logic.get_application_address(appIndex)
-    assetIndex=getIndexAsset(appAddr,DAOTokenName,algodClient)
+    listIndex=getIndexAssets(appAddr,[DAOTokenName,DAOGovName+"0",DAOGovName+"1",DAOGovName+"2"],algodClient)
     print(f'{"Escrow addr:":24s}{appAddr:s}')
-    print(f'{"Asset index:":24s}{assetIndex:d}')
+    for idx in listIndex:
+    	print(f'{"Asset index:":24s}{idx:d}')
 
-    utx0=ApplicationOptInTxn(sender=Addr,sp=params,index=appIndex,foreign_assets=[assetIndex])
-    utx1=AssetTransferTxn(sender=Addr,sp=params,receiver=Addr,amt=0,index=assetIndex)
-    gid=calculate_group_id([utx0,utx1])
-    
-    utx0.group=gid
-    utx1.group=gid
+    utx0=ApplicationOptInTxn(sender=Addr,sp=params,index=appIndex,foreign_assets=listIndex)
+    listTx=[utx0]
+    for idx in listIndex:
+    	listTx.append(AssetTransferTxn(sender=Addr,sp=params,receiver=Addr,amt=0,index=idx))
+    gid=calculate_group_id(listTx)
+    for tx in listTx:
+    	tx.group=gid
 
-    stx0=utx0.sign(SK)
-    stx1=utx1.sign(SK)
-    Txns=[stx0,stx1]
+    listStx=[]
+    for tx in listTx:
+    	listStx.append(tx.sign(SK))
 
-    txId=algodClient.send_transactions([stx0,stx1])
+    txId=algodClient.send_transactions(listStx)
     print(f'{"Transaction id:":24s}{txId:s}')
 
     confirmed=wait_for_confirmation(algodClient,txId,4)

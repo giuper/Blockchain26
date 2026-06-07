@@ -72,3 +72,16 @@ def getAmountAssetFromAddrIndex(Addr,index,algodClient):
 def getAssetFromAddr(Addr,algodClient):
     accountInfo=algodClient.account_info(Addr)
     print(accountInfo['assets'][0].keys())
+
+def getIndexAssets(creatorAddr,assetNames,algodClient):
+
+    accountInfo=algodClient.account_info(creatorAddr)
+    noca=len(accountInfo['created-assets'])
+    listIndex=[]
+    if noca==0:
+        return listIndex
+    for asset in accountInfo['created-assets']:
+        if (asset['params']['name'] in assetNames):
+            listIndex.append(asset['index'])
+            print(f'{"Found Asset:":24s}{asset['params']['name']:9s}{asset['index']:d}')
+    return listIndex

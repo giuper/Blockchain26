@@ -3,20 +3,7 @@ from algosdk import logic
 from algosdk.v2client import algod
 from algosdk.transaction import ApplicationDeleteTxn
 from utilities import algodAddress, algodToken, wait_for_confirmation, getSKAddr
-from daoutilities import DAOTokenName,DAOGovName
-
-def getIndexAssets(creatorAddr,assetNames,algodClient):
-
-    accountInfo=algodClient.account_info(creatorAddr)
-    noca=len(accountInfo['created-assets'])
-    listIndex=[]
-    if noca==0:
-        return listIndex
-    for asset in accountInfo['created-assets']:
-        if (asset['params']['name'] in assetNames):
-            listIndex.append(asset['index'])
-            print(f'{"Found Asset:":24s}{asset['params']['name']:9s}{asset['index']:d}')
-    return listIndex
+from daoutilities import DAOTokenName, DAOGovName, getIndexAssets
 
 def deleteApp(MnemFile,appIndex,algodClient):
 
