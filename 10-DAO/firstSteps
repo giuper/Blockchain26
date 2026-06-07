@@ -26,8 +26,10 @@ echo -e "\e[31mStarting the DAO\e[0m"
 ${apython} startDAO.py ${FA2M}  ${appid}
 
 echo -e "\e[31mUser" `cat ${UA}` "opting in\e[0m"
-${apython} userOpt.py ${UM} $appid
+${apython} userOpt.py ${FA2M} $appid
+#${apython} userOpt.py ${UM} $appid
 
+${apython} founderStart.py ${FA2M} $appid
 
 #${apython} deleteDAO.py ${FA2M} ${appid}
 #echo -e "\e[31mDestroyed by user" `cat ${FA2}` "\e[0m"

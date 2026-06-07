@@ -141,6 +141,7 @@ def approval_program(fAddr):
 	     Approve()
     	     ])).Else(Approve())
 
+    handle_optin=Approve()
     handle_buy=Seq([
         amt.store(Btoi(Txn.application_args[1])),
         If(And(

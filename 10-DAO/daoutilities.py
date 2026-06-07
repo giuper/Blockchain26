@@ -74,7 +74,6 @@ def getAssetFromAddr(Addr,algodClient):
     print(accountInfo['assets'][0].keys())
 
 def getIndexAssets(creatorAddr,assetNames,algodClient):
-
     accountInfo=algodClient.account_info(creatorAddr)
     noca=len(accountInfo['created-assets'])
     listIndex=[]
